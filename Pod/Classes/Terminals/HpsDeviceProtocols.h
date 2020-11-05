@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "EMVCore/EMVCore.h"
 
 @protocol IHPSDeviceMessage
 @required
@@ -61,6 +62,10 @@
 - (void) GetLastResponse:(void(^)(id <IHPSDeviceResponse>, NSError*))responseBlock;
 - (void) setSAFMode:(BOOL)isSAF response:(void(^)(id <IHPSDeviceResponse>, NSError*))responseBlock;
 
+@end
+
+@protocol IC2xDeviceInterface
+-(void)processTransactionWithRequest:(TransactionRequest*)transactionRequest;
 @end
 
 @interface HpsDeviceProtocols : NSObject

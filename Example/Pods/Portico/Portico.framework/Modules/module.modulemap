@@ -1,0 +1,6 @@
+framework module Portico {
+  umbrella header "Portico.h"
+
+  export *
+  module * { export * }
+}

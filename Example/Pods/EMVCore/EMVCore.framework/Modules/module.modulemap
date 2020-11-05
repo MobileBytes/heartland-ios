@@ -1,0 +1,11 @@
+framework module EMVCore {
+  umbrella header "EMVCore.h"
+
+  export *
+  module * { export * }
+}
+
+module EMVCore.Swift {
+    header "EMVCore-Swift.h"
+    requires objc
+}

@@ -4,6 +4,7 @@
 #import "HpsTerminalEnums.h"
 #import "HpsPaxHostResponse.h"
 #import "HpsHpaResponse.h"
+#import <EMVCore/EMVCore.h>
 
 @class HpsHpaResponse;
 
@@ -66,5 +67,5 @@
 @property (nonatomic,readwrite) int lastResponseTransactionId;
 
 - (void) mapResponse:(id <HpaResposeInterface>) response;
-
++(HpsTerminalResponse*)terminalResponseFromVitalSDK:(TransactionResponse*)transactionResponse;
 @end

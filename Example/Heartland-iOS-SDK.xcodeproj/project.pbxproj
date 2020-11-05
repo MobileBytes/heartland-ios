@@ -40,7 +40,9 @@
 		DBF1DE8B1FB9AEF100D57C16 /* Hps_Hpa_Debit_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF1DE8A1FB9AEF100D57C16 /* Hps_Hpa_Debit_Test.m */; };
 		DBF1DE8D1FB9AF0900D57C16 /* Hps_Hpa_Gift_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = DBF1DE8C1FB9AF0900D57C16 /* Hps_Hpa_Gift_Test.m */; };
 		E2576C2D243C78D1002E4CA4 /* Hps_Pax_Report_test.m in Sources */ = {isa = PBXBuildFile; fileRef = E2576C2C243C78D1002E4CA4 /* Hps_Pax_Report_test.m */; };
+		E2A0E9A824DD543B004E9BED /* Hps_C2X_Device_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A0E9A724DD543B004E9BED /* Hps_C2X_Device_Test.m */; };
 		E2A3363B2455C6950041AD64 /* Hps_Pax_Batch_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A3363A2455C6950041AD64 /* Hps_Pax_Batch_Tests.m */; };
+		E2AAA6C4250F6DB600B521FF /* Hps_C2x_Credit_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AAA6C3250F6DB600B521FF /* Hps_C2x_Credit_Test.m */; };
 		E2B1C1BC2403DFF20040D5C7 /* Hps_Hpa_EOD_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = E2B1C1BB2403DFF20040D5C7 /* Hps_Hpa_EOD_Test.m */; };
 		E2B1C1EB24190C820040D5C7 /* Hps_Hpa_EBT_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = E2B1C1EA24190C820040D5C7 /* Hps_Hpa_EBT_Test.m */; };
 /* End PBXBuildFile section */
@@ -105,7 +107,9 @@
 		DBF1DE8A1FB9AEF100D57C16 /* Hps_Hpa_Debit_Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Hps_Hpa_Debit_Test.m; sourceTree = "<group>"; };
 		DBF1DE8C1FB9AF0900D57C16 /* Hps_Hpa_Gift_Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Hps_Hpa_Gift_Test.m; sourceTree = "<group>"; };
 		E2576C2C243C78D1002E4CA4 /* Hps_Pax_Report_test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Hps_Pax_Report_test.m; sourceTree = "<group>"; };
+		E2A0E9A724DD543B004E9BED /* Hps_C2X_Device_Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Hps_C2X_Device_Test.m; sourceTree = "<group>"; };
 		E2A3363A2455C6950041AD64 /* Hps_Pax_Batch_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Hps_Pax_Batch_Tests.m; sourceTree = "<group>"; };
+		E2AAA6C3250F6DB600B521FF /* Hps_C2x_Credit_Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Hps_C2x_Credit_Test.m; sourceTree = "<group>"; };
 		E2B1C1BB2403DFF20040D5C7 /* Hps_Hpa_EOD_Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Hps_Hpa_EOD_Test.m; sourceTree = "<group>"; };
 		E2B1C1EA24190C820040D5C7 /* Hps_Hpa_EBT_Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Hps_Hpa_EBT_Test.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -201,6 +205,7 @@
 		6003F5B5195388D20070C39A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				E2A0E9A624DD44C6004E9BED /* C2X */,
 				DBE8B01820ECA2BA006F8B97 /* Payroll */,
 				DBF1B0A32080B395007A775E /* FreshTxt */,
 				DBDA366F1FAB429300CF5146 /* Hpa */,
@@ -278,6 +283,15 @@
 			name = FreshTxt;
 			sourceTree = "<group>";
 		};
+		E2A0E9A624DD44C6004E9BED /* C2X */ = {
+			isa = PBXGroup;
+			children = (
+				E2A0E9A724DD543B004E9BED /* Hps_C2X_Device_Test.m */,
+				E2AAA6C3250F6DB600B521FF /* Hps_C2x_Credit_Test.m */,
+			);
+			name = C2X;
+			sourceTree = "<group>";
+		};
 		E706FDDAF26E6725313B27CA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -344,9 +358,10 @@
 				ORGANIZATIONNAME = "Shaunti Fondrisi";
 				TargetAttributes = {
 					6003F589195388D20070C39A = {
-						DevelopmentTeam = 264BX5RC4N;
+						DevelopmentTeam = J4ZRP28ZUZ;
 					};
 					6003F5AD195388D20070C39A = {
+						DevelopmentTeam = J4ZRP28ZUZ;
 						TestTargetID = 6003F589195388D20070C39A;
 					};
 				};
@@ -418,18 +433,30 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Heartland-iOS-SDK_Tests/Pods-Heartland-iOS-SDK_Tests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Heartland-iOS-SDK_Tests/Pods-Heartland-iOS-SDK_Tests-frameworks.sh",
+				"${PODS_ROOT}/BBDeviceSPoC/BBDeviceSPoC.framework",
+				"${PODS_ROOT}/BBPOS/BBPOS.framework",
+				"${PODS_ROOT}/EMVCore/EMVCore.framework",
+				"${PODS_ROOT}/GlobalPaymentsApi/GlobalPaymentsApi.framework",
 				"${BUILT_PRODUCTS_DIR}/Heartland-iOS-SDK/Heartland_iOS_SDK.framework",
+				"${PODS_ROOT}/Portico/Portico.framework",
+				"${PODS_ROOT}/VitalSDK/HeartlandSDK.framework",
 				"${BUILT_PRODUCTS_DIR}/XMLDictionary/XMLDictionary.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BBDeviceSPoC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BBPOS.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EMVCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GlobalPaymentsApi.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Heartland_iOS_SDK.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Portico.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HeartlandSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XMLDictionary.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Heartland-iOS-SDK_Tests/Pods-Heartland-iOS-SDK_Tests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Heartland-iOS-SDK_Tests/Pods-Heartland-iOS-SDK_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		38B1A6D6613D7C674CF3033C /* [CP] Embed Pods Frameworks */ = {
@@ -438,18 +465,30 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Heartland-iOS-SDK_Example/Pods-Heartland-iOS-SDK_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Heartland-iOS-SDK_Example/Pods-Heartland-iOS-SDK_Example-frameworks.sh",
+				"${PODS_ROOT}/BBDeviceSPoC/BBDeviceSPoC.framework",
+				"${PODS_ROOT}/BBPOS/BBPOS.framework",
+				"${PODS_ROOT}/EMVCore/EMVCore.framework",
+				"${PODS_ROOT}/GlobalPaymentsApi/GlobalPaymentsApi.framework",
 				"${BUILT_PRODUCTS_DIR}/Heartland-iOS-SDK/Heartland_iOS_SDK.framework",
+				"${PODS_ROOT}/Portico/Portico.framework",
+				"${PODS_ROOT}/VitalSDK/HeartlandSDK.framework",
 				"${BUILT_PRODUCTS_DIR}/XMLDictionary/XMLDictionary.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BBDeviceSPoC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BBPOS.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EMVCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GlobalPaymentsApi.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Heartland_iOS_SDK.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Portico.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HeartlandSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XMLDictionary.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Heartland-iOS-SDK_Example/Pods-Heartland-iOS-SDK_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Heartland-iOS-SDK_Example/Pods-Heartland-iOS-SDK_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BBDD82C2366DB21838DFE6E9 /* [CP] Check Pods Manifest.lock */ = {
@@ -502,6 +541,8 @@
 				DB8A59C11F4BDF7000B98B73 /* Hps_Pax_VRF_Test.m in Sources */,
 				848DD45C1D75FBE500D3F658 /* Hps_Pax_Gift_Tests.m in Sources */,
 				DBDA367E1FB01C2000CF5146 /* Hps_Hpa_Credit_Test.m in Sources */,
+				E2A0E9A824DD543B004E9BED /* Hps_C2X_Device_Test.m in Sources */,
+				E2AAA6C4250F6DB600B521FF /* Hps_C2x_Credit_Test.m in Sources */,
 				84FFB2CC1D63537400D56BF9 /* Hps_Pax_Credit_Tests.m in Sources */,
 				84FA62D71C035C4B007854D5 /* Heartland_GatewayTests.m in Sources */,
 				DB30662B2188794A00F6E101 /* Hps_Hpa_Report_Test.m in Sources */,
@@ -561,6 +602,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -606,6 +648,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -631,6 +674,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = J4ZRP28ZUZ;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Heartland-iOS-SDK/Heartland-iOS-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Heartland-iOS-SDK/Heartland-iOS-SDK-Info.plist";
@@ -651,6 +696,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = J4ZRP28ZUZ;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Heartland-iOS-SDK/Heartland-iOS-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Heartland-iOS-SDK/Heartland-iOS-SDK-Info.plist";
@@ -668,6 +715,7 @@
 			baseConfigurationReference = 61BF46B1C380625FF377FAA8 /* Pods-Heartland-iOS-SDK_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = J4ZRP28ZUZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -691,6 +739,7 @@
 			baseConfigurationReference = 253ABA11EC670E90EACA486A /* Pods-Heartland-iOS-SDK_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = J4ZRP28ZUZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -727,6 +776,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -759,6 +809,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = J4ZRP28ZUZ;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Heartland-iOS-SDK/Heartland-iOS-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Heartland-iOS-SDK/Heartland-iOS-SDK-Info.plist";
@@ -776,6 +828,7 @@
 			baseConfigurationReference = 08D636DD28A9667ED2741E32 /* Pods-Heartland-iOS-SDK_Tests.pax_testing.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = J4ZRP28ZUZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
