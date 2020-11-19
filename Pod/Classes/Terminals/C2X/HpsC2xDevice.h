@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithConfig:(HpsConnectionConfig*)config;
 -(void)initialize;
+- (void)scan;
 -(void)stopScan;
 -(void)getDeviceInfo;
 - (void)connectDevice:(CBPeripheral *)device;
