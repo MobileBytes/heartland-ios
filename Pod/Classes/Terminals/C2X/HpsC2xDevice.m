@@ -202,7 +202,9 @@
 }
 - (void)onDisconnected
 {
-    
+    if (self.deviceDelegate && [self.deviceDelegate respondsToSelector:@selector(onDisconnected)]) {
+        [self.deviceDelegate onDisconnected];
+    }
 }
 - (void)onTerminalInfoReceived:(nullable TerminalInfo *)terminalInfo
 {
