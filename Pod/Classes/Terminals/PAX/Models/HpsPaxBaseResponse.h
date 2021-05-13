@@ -11,7 +11,7 @@
 #import "HpsPaxEcomSubGroup.h"
 #import "HpsPaxExtDataSubGroup.h"
 #import "HpsTerminalResponse.h"
-
+#define HpsScanExceptionNotification @"HpsScanExceptionNotification"
 @interface HpsPaxBaseResponse : HpsTerminalResponse <IHPSDeviceResponse>
 
 //@property (nonatomic,strong) NSString *status;

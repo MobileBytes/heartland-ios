@@ -35,9 +35,12 @@
 	self.deviceResponseCode = [binaryReader readStringUntilDelimiter:HpsControlCodes_FS];
 	self.deviceResponseMessage = [binaryReader readStringUntilDelimiter:HpsControlCodes_FS];
 
-	if (![_messageIds containsObject:self.command]) {
-		@throw [NSException exceptionWithName:@"HpsScanException" reason:[NSString stringWithFormat:@"Unexpected message type received. Expected %@ but received %@.", _messageId, self.command] userInfo:nil];
-	}
+    if (![_messageIds containsObject:self.command]) {
+        NSString * reason = [NSString stringWithFormat:@"Unexpected message type received. Expected %@ but received %@.", _messageId, self.command];
+        NSException * exception = [NSException exceptionWithName:@"HpsScanException" reason:reason userInfo:@{@"NSLocalizedDescription":reason}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:HpsScanExceptionNotification object:exception];
+        return nil;
+    }
 
 	NSLog(@"\r response_toString = %@ \r",[self toString]);
     [[MBLogger sharedInstance] sysLog:[NSString stringWithFormat:@"PAX response str: %@",[self toString]] fromClass:[self class] calledBy:_cmd];
