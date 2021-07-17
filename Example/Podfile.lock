@@ -13,7 +13,7 @@ DEPENDENCIES:
   - Heartland-iOS-SDK (from `../`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/CocoaPods/Specs:
     - BBPOS
     - GlobalPaymentsApi
     - VitalSDK

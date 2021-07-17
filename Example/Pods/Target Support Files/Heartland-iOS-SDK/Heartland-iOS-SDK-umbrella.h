@@ -130,6 +130,7 @@
 #import "HpsPaxCreditVoidBuilder.h"
 #import "HpsPaxDebitReturnBuilder.h"
 #import "HpsPaxDebitSaleBuilder.h"
+#import "HpsPaxDebitVoidBuilder.h"
 #import "HpsPaxGiftActivateBuilder.h"
 #import "HpsPaxGiftAddValueBuilder.h"
 #import "HpsPaxGiftBalanceBuilder.h"
