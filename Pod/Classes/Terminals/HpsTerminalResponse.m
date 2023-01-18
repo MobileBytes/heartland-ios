@@ -39,12 +39,28 @@
 }
 
 - (BOOL)gmsResponseIsTimeout {
-    return [self.deviceResponseCode isEqualToString:@"hostTimeout"];
+    return ( [self.deviceResponseCode isEqualToString:@"hostTimeout"] || [self.deviceResponseCode containsString:@"Transaction has timed out"]);
 }
 
 - (BOOL)gmsResponseOriginalTransactionInvalid {
     return [self.deviceResponseCode containsString:
             @"Transaction rejected because the referenced original transaction is invalid"];
+}
+
+- (BOOL)gmsResponseIsDuplicate {
+    return [self.deviceResponseCode containsString:@"Transaction was rejected because it is a duplicate"];
+}
+
+- (NSString*)gmsResponseDuplicatedTransactionID {
+    if(self.gmsResponseIsDuplicate){
+        //here is what we expecting:
+        //Transaction was rejected because it is a duplicate. Subject '1779929758'.
+        NSArray *parts = [self.deviceResponseCode componentsSeparatedByString:@"'"];
+        if (parts.count > 0){
+            return parts[1];
+        }
+    }
+    return @"";
 }
 
 - (void) mapResponse:(id <HpaResposeInterface>) response
