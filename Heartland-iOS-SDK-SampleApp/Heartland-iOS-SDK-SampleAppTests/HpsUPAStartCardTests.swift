@@ -7,6 +7,24 @@ import Foundation
 import XCTest
 @testable import Heartland_iOS_SDK
 
+class HpsStartCardLoggerMock: NSObject, HpsInterfaceLogging {
+    func hpsInterfaceDidDisconnect() {
+    }
+
+    func hpsInterfaceDidReceive(_ data: Data!) {
+        let description = String(data: data, encoding: .utf8) ?? ""
+        print("hpsInterfaceDidReceive - \(String(data: data, encoding: .utf8) ?? "")")
+    }
+
+    func hpsInterfaceDidReceiveError(_ error: Error!) {
+        let description = error.localizedDescription
+        print("hpsInterfaceDidReceiveError - \(description)")
+    }
+
+    func willLogHPSInterface(with config: HpsConnectionConfig!) {
+    }
+}
+
 class HpsUPAStartCardTests: XCTestCase {
     
     private func setupDevice() -> HpsUpaDevice? {
@@ -19,6 +37,7 @@ class HpsUPAStartCardTests: XCTestCase {
         config.ipAddress = "192.168.4.127";
         config.port = "8081";
         config.connectionMode = HpsConnectionModes.TCP_IP.rawValue
+        config.logger = HpsStartCardLoggerMock()
         return HpsUpaDevice(config: config)
     }
     
