@@ -12,7 +12,7 @@ public class HpsUpaStartCardTransactionBuilder {
         self.upaDevice = device
     }
     
-    public func execute(request: HpsUpaStartCard, response: @escaping (IHPSDeviceResponse?, HpsUpaStartCardResponse?, Error?) -> Void) {
+    public func execute(request: HpsUpaStartCard, response: @escaping (HpsUpaStartCardResponse?, Error?) -> Void) {
         let encoder = JSONEncoder()
         
         let json = try? encoder.encode(request)
@@ -20,13 +20,13 @@ public class HpsUpaStartCardTransactionBuilder {
         guard let json else { return }
         
         upaDevice.processTransaction(withJSONString: String(data: json, encoding: .utf8),
-                                     withResponseBlock: { deviceResponse, jsonDeviceResponse, error in
+                                     withResponseBlock: { _, jsonDeviceResponse, error in
                                         var hpsUpaStartCardResponse: HpsUpaStartCardResponse?
                                         if let jsonDeviceResponse, let jsonData = jsonDeviceResponse.data(using: .utf8) {
                                             hpsUpaStartCardResponse = try? JSONDecoder().decode(HpsUpaStartCardResponse.self, from: jsonData)
                                         }
             
-                                        response(deviceResponse, hpsUpaStartCardResponse, error)
+                                        response(hpsUpaStartCardResponse, error)
                                      })
     }
 }
