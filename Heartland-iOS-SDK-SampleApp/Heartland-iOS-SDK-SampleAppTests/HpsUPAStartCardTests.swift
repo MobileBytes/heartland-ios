@@ -40,6 +40,28 @@ class HpsUPAStartCardTests: XCTestCase {
         config.logger = HpsStartCardLoggerMock()
         return HpsUpaDevice(config: config)
     }
+
+    func testStartCardAcquisitionTypesSerialization() throws {
+        /// 1 valid type
+        try verifyEncoding([.manual], "Manual")
+        /// multiple valid types
+        try verifyEncoding([.manual, .swipe], "Manual|Swipe")
+        /// all valid types
+        try verifyEncoding([.contact, .contactless, .manual, .scan, .swipe], "Contact|Contactless|Manual|Scan|Swipe")
+        /// empty
+        try verifyEncoding([], "")
+    }
+    
+    private func verifyEncoding(
+        _ acquisitionTypes: [HpsUpaStartCardParamsAcquisitionType],
+        _ expectedRawAcquisitionTypes: String
+    ) throws {
+        let params = HpsUpaStartCardParams(acquisitionTypes: acquisitionTypes)
+        let dataFromParams = try JSONEncoder().encode(params)
+        let objFromParams = try JSONSerialization.jsonObject(with: dataFromParams)
+        let jsonFromParams = try XCTUnwrap(objFromParams as? [String: Any])
+        XCTAssertEqual(jsonFromParams["acquisitionTypes"] as? String, expectedRawAcquisitionTypes)
+    }
     
     func testStartCardExecute() {
         let expectation = XCTestExpectation(description: "Wait for execution...")
@@ -52,7 +74,7 @@ class HpsUPAStartCardTests: XCTestCase {
         
         let builder = HpsUpaStartCardTransactionBuilder(with: device)
         
-        let params = HpsUpaStartCardParams(acquisitionTypes: "Swipe",
+        let params = HpsUpaStartCardParams(acquisitionTypes: [.swipe],
                                            timeout: nil,
                                            header: nil,
                                            displayTotalAmount: nil,
