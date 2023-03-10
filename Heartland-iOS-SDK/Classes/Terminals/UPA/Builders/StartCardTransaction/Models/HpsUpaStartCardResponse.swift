@@ -18,22 +18,38 @@ public struct HpsUpaStartCardResponse: Codable {
 
 // MARK: - HpsUpaStartCardResponseData
 public struct HpsUpaStartCardResponseData: Codable {
+    public let ecrId: String?
+    public let requestId: String?
     public let response: String?
     public let cmdResult: HpsUpaStartCardResponseCmdResult?
     public let data: HpsUpaStartCardResponseDataData?
 
-    public init(response: String?, cmdResult: HpsUpaStartCardResponseCmdResult?, data: HpsUpaStartCardResponseDataData?) {
+    public init(ecrId: String?, requestId: String?, response: String?, cmdResult: HpsUpaStartCardResponseCmdResult?, data: HpsUpaStartCardResponseDataData?) {
+        self.ecrId = ecrId
+        self.requestId = requestId
         self.response = response
         self.cmdResult = cmdResult
         self.data = data
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case ecrId = "EcrId"
+        case requestId
+        case response
+        case cmdResult
+        case data
     }
 }
 
 // MARK: - CmdResult
 public struct HpsUpaStartCardResponseCmdResult: Codable {
+    public let errorCode: String?
+    public let errorMessage: String?
     public let result: String?
 
-    public init(result: String?) {
+    public init(errorCode: String?, errorMessage: String?, result: String?) {
+        self.errorCode = errorCode
+        self.errorMessage = errorMessage
         self.result = result
     }
 }

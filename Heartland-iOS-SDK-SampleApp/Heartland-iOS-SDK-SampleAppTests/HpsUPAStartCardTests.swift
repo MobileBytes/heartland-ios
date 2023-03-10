@@ -7,6 +7,24 @@ import Foundation
 import XCTest
 @testable import Heartland_iOS_SDK
 
+class HpsStartCardLoggerMock: NSObject, HpsInterfaceLogging {
+    func hpsInterfaceDidDisconnect() {
+    }
+
+    func hpsInterfaceDidReceive(_ data: Data!) {
+        let description = String(data: data, encoding: .utf8) ?? ""
+        print("hpsInterfaceDidReceive - \(String(data: data, encoding: .utf8) ?? "")")
+    }
+
+    func hpsInterfaceDidReceiveError(_ error: Error!) {
+        let description = error.localizedDescription
+        print("hpsInterfaceDidReceiveError - \(description)")
+    }
+
+    func willLogHPSInterface(with config: HpsConnectionConfig!) {
+    }
+}
+
 class HpsUPAStartCardTests: XCTestCase {
     
     private func setupDevice() -> HpsUpaDevice? {
@@ -19,7 +37,30 @@ class HpsUPAStartCardTests: XCTestCase {
         config.ipAddress = "192.168.4.127";
         config.port = "8081";
         config.connectionMode = HpsConnectionModes.TCP_IP.rawValue
+        config.logger = HpsStartCardLoggerMock()
         return HpsUpaDevice(config: config)
+    }
+
+    func testStartCardAcquisitionTypesSerialization() throws {
+        /// 1 valid type
+        try verifyEncoding([.manual], "Manual")
+        /// multiple valid types
+        try verifyEncoding([.manual, .swipe], "Manual|Swipe")
+        /// all valid types
+        try verifyEncoding([.contact, .contactless, .manual, .scan, .swipe], "Contact|Contactless|Manual|Scan|Swipe")
+        /// empty
+        try verifyEncoding([], "")
+    }
+    
+    private func verifyEncoding(
+        _ acquisitionTypes: [HpsUpaStartCardParamsAcquisitionType],
+        _ expectedRawAcquisitionTypes: String
+    ) throws {
+        let params = HpsUpaStartCardParams(acquisitionTypes: acquisitionTypes)
+        let dataFromParams = try JSONEncoder().encode(params)
+        let objFromParams = try JSONSerialization.jsonObject(with: dataFromParams)
+        let jsonFromParams = try XCTUnwrap(objFromParams as? [String: Any])
+        XCTAssertEqual(jsonFromParams["acquisitionTypes"] as? String, expectedRawAcquisitionTypes)
     }
     
     func testStartCardExecute() {
@@ -33,7 +74,7 @@ class HpsUPAStartCardTests: XCTestCase {
         
         let builder = HpsUpaStartCardTransactionBuilder(with: device)
         
-        let params = HpsUpaStartCardParams(acquisitionTypes: "Swipe",
+        let params = HpsUpaStartCardParams(acquisitionTypes: [.swipe],
                                            timeout: nil,
                                            header: nil,
                                            displayTotalAmount: nil,
@@ -57,8 +98,7 @@ class HpsUPAStartCardTests: XCTestCase {
             processingIndicators: pi,
             transaction: tx)))
         
-        builder.execute(request: request) { deviceResponse, upaResponse, error in
-            debugPrint(deviceResponse)
+        builder.execute(request: request) { upaResponse, error in
             debugPrint(upaResponse)
             debugPrint(error)
             
