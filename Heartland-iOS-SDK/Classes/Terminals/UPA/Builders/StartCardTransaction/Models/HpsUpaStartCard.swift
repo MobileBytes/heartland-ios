@@ -59,6 +59,10 @@ public struct HpsUpaStartCardParams: Codable {
         self.brandIcon1 = brandIcon1
         self.brandIcon2 = brandIcon2
     }
+
+    public init(acquisitionTypes: [HpsUpaStartCardParamsAcquisitionType], timeout: Int? = nil, header: String? = nil, displayTotalAmount: String? = nil, promptForManualEntryPassword: String? = nil, brandIcon1: Int? = nil, brandIcon2: Int? = nil) {
+        self.init(acquisitionTypes: acquisitionTypes.rawValue, timeout: timeout, header: header, displayTotalAmount: displayTotalAmount, promptForManualEntryPassword: promptForManualEntryPassword, brandIcon1: brandIcon1, brandIcon2: brandIcon2)
+    }
 }
 
 public struct HpsUpaStartCardProcessingIndicators: Codable {
@@ -88,5 +92,26 @@ public struct HpsUpaStartCardTransaction: Codable {
         self.tranDate = tranDate
         self.tranTime = tranTime
         self.transactionType = transactionType
+    }
+}
+
+public enum HpsUpaStartCardParamsAcquisitionType: String {
+    case contact = "Contact"
+    case contactless = "Contactless"
+    case manual = "Manual"
+    case scan = "Scan"
+    case swipe = "Swipe"
+}
+
+extension Array: RawRepresentable where Element == HpsUpaStartCardParamsAcquisitionType {
+    public var rawValue: String {
+        map(\.rawValue).joined(separator: "|")
+    }
+
+    public init?(rawValue: String) {
+        let rawValues = rawValue.components(separatedBy: "|")
+        let values = rawValues.compactMap(HpsUpaStartCardParamsAcquisitionType.init(rawValue:))
+        guard rawValue == "" || !values.isEmpty else { return nil }
+        self = values
     }
 }
