@@ -9,10 +9,7 @@ public class HpsWiseCubeDevice: GMSDevice, IWiseCubeDeviceInterface {
                 .contact,
                 .contactless,
                 .manual,
-<<<<<<< HEAD
                 .quickChip
-=======
->>>>>>> hps/release/2.0.8
             ],
             terminalType: .bbpos_wisecube
         )
