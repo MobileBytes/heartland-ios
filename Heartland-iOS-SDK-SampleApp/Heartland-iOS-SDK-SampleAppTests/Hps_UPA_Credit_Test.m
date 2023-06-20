@@ -12,6 +12,31 @@
 #import <Heartland_iOS_SDK/HpsUpaCaptureBuilder.h>
 #import <Heartland_iOS_SDK/HpsUpaVerifyBuilder.h>
 
+@interface HpsUpaInterfaceLogger : NSObject <HpsInterfaceLogging>
+
+@end
+
+@implementation HpsUpaInterfaceLogger
+
+- (void)hpsInterfaceDidDisconnect {
+    NSLog(@"hpsInterfaceDidDisconnect");
+}
+
+- (void)hpsInterfaceDidReceiveData:(NSData *)data {
+    if (data == nil) return;
+    NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"hpsInterfaceDidReceiveData: %@", dataString);
+}
+
+- (void)hpsInterfaceDidReceiveError:(NSError *)error {
+    NSLog(@"hpsInterfaceDidReceiveError: %@", error.localizedDescription);
+}
+
+- (void)willLogHPSInterfaceWithConfig:(HpsConnectionConfig *)config {
+}
+
+@end
+
 @interface Hps_Upa_Credit_Tests : XCTestCase
 
 @end
@@ -37,6 +62,7 @@
     [config setConnectionMode:HpsConnectionModes_TCP_IP];
     [config setIpAddress:@""];
     [config setIsProduction:YES];
+    [config setLogger:HpsUpaInterfaceLogger.new];
     [config setPort:@"8081"];
     [config setTimeout:60];
     return config;
