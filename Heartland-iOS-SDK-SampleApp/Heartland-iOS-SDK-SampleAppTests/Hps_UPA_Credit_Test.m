@@ -76,9 +76,9 @@
     [builder execute:^(HpsUpaResponse *payload, NSError *error) {
         XCTAssertNil(error);
         XCTAssertEqualObjects(@"00", payload.responseCode);
-        XCTAssertNotNil(payload);
+        XCTAssert([payload isSuccess]);
      
-        sleep(1);
+        sleep(5);
         
         //Void
         HpsUpaVoidBuilder *vbuilder = [[HpsUpaVoidBuilder alloc] initWithDevice:device];
@@ -88,7 +88,7 @@
         [vbuilder execute:^(HpsUpaResponse *vpayload, NSError *verror) {
             XCTAssertNil(verror);
             XCTAssertEqualObjects(@"00", vpayload.responseCode);
-            XCTAssertNotNil(vpayload);
+            XCTAssert([vpayload isSuccess]);
             [expectation fulfill];
         }];
     }];
@@ -301,9 +301,9 @@
     [builder execute:^(HpsUpaResponse *payload, NSError *error) {
         XCTAssertNil(error);
         XCTAssertEqualObjects(@"00", payload.responseCode);
-        XCTAssertNotNil(payload);
+        XCTAssert([payload isSuccess]);
         
-        sleep(1);
+        sleep(5);
      
         //Void
         HpsUpaVoidBuilder *vbuilder = [[HpsUpaVoidBuilder alloc] initWithDevice:device];
@@ -313,7 +313,7 @@
         [vbuilder execute:^(HpsUpaResponse *vpayload, NSError *verror) {
             XCTAssertNil(verror);
             XCTAssertEqualObjects(@"00", vpayload.responseCode);
-            XCTAssertNotNil(vpayload);
+            XCTAssert([vpayload isSuccess]);
             [expectation fulfill];
         }];
     }];
