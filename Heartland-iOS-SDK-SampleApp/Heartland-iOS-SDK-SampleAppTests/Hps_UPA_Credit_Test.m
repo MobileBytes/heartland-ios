@@ -32,6 +32,16 @@
     return device;
 }
 
+- (HpsConnectionConfig *)hrposConfig {
+    HpsConnectionConfig *config = [HpsConnectionConfig new];
+    [config setConnectionMode:HpsConnectionModes_TCP_IP];
+    [config setIpAddress:@""];
+    [config setIsProduction:YES];
+    [config setPort:@"8081"];
+    [config setTimeout:60];
+    return config;
+}
+
 - (void)setUp {
     [self setContinueAfterFailure:NO];
     sleep(10);
