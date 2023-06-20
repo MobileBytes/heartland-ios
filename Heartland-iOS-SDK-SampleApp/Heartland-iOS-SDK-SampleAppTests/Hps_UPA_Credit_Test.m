@@ -155,6 +155,7 @@
         HpsUpaReturnBuilder *rbuilder = [[HpsUpaReturnBuilder alloc] initWithDevice:device];
         rbuilder.ecrId = @"1";
         rbuilder.amount = [[NSDecimalNumber alloc] initWithDouble:1.00];
+        rbuilder.transactionId = payload.transactionId; // <- remove for open refund
         
         [rbuilder execute:^(HpsUpaResponse *rpayload, NSError *rerror) {
             XCTAssertNil(rerror);
