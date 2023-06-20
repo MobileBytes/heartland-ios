@@ -121,9 +121,9 @@
     [builder execute:^(HpsUpaResponse *payload, NSError *error) {
         XCTAssertNil(error);
         XCTAssertEqualObjects(@"00", payload.responseCode);
-        XCTAssertNotNil(payload);
+        XCTAssert([payload isSuccess]);
      
-        sleep(1);
+        sleep(5);
         
         //Refund
         HpsUpaReturnBuilder *rbuilder = [[HpsUpaReturnBuilder alloc] initWithDevice:device];
@@ -133,7 +133,7 @@
         [rbuilder execute:^(HpsUpaResponse *rpayload, NSError *rerror) {
             XCTAssertNil(rerror);
             XCTAssertEqualObjects(@"00", rpayload.responseCode);
-            XCTAssertNotNil(rpayload);
+            XCTAssert([rpayload isSuccess]);
             [expectation fulfill];
         }];
     }];
