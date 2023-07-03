@@ -7,7 +7,8 @@
 @property (nonatomic,strong) NSString *referenceNumber;
 @property (nonatomic,strong) NSString *transactionNunmber;
 @property (nonatomic,strong) NSString *timeStamp;
- 
+@property (nonatomic,strong) NSString *originalTransID;
+
 - (id)initWithBinaryReader: (HpsBinaryDataScanner*)br;
 
 @end
