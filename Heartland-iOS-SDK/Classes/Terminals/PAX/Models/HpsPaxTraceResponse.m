@@ -21,7 +21,10 @@
             case 2:
                 self.timeStamp = value;
                 break; 
-                
+            case 6:
+                self.originalTransID = value;
+                break;
+            
             default:
                 break;
         }
