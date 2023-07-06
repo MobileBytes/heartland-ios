@@ -38,17 +38,29 @@ class ConnectC2XViewController: UIViewController {
         config.versionNumber = ""
         config.timeout = timeout
 
+<<<<<<< HEAD
         self.device = HpsC2xDevice(config: config)
         self.device?.deviceDelegate = self
         self.device?.scan()
         self.activityIndicator.isHidden = false
         
+=======
+        device = HpsC2xDevice(config: config)
+        device?.deviceDelegate = self
+        device?.scan()
+        print(" Is Device Connected?: \(device?.isConnected())")
+        activityIndicator.isHidden = false
+        
+//        testSaleApp()
+//        testPaxDeviceManual()
+>>>>>>> 493e0f0 (Prep 2.0.11 SDK release)
     }
     
     func testPaxDeviceManual() {
         let timeout = 120
 
         let config = HpsConnectionConfig()
+<<<<<<< HEAD
         config.ipAddress = "192.168.15.2"
         config.port = "10009"
         config.username = ""
@@ -58,13 +70,22 @@ class ConnectC2XViewController: UIViewController {
         config.licenseID = ""
         config.developerID = ""
         config.versionNumber = ""
+=======
+        config.ipAddress = "192.168.31.81"
+        config.port = "10009"
+>>>>>>> 493e0f0 (Prep 2.0.11 SDK release)
         config.connectionMode = 1
         config.timeout = timeout
 
         self.paxDevice = HpsPaxDevice(config: config)
 
+<<<<<<< HEAD
         let builder = HpsPaxCreditSaleBuilder(device: self.paxDevice)
         builder?.amount = 11.0
+=======
+        let builder = HpsPaxCreditSaleBuilder(device: paxDevice)
+        builder?.amount = 12.0
+>>>>>>> 493e0f0 (Prep 2.0.11 SDK release)
         builder?.referenceNumber = 10
         builder?.allowDuplicates = false
 
@@ -79,6 +100,11 @@ class ConnectC2XViewController: UIViewController {
                 print("Response: \(response)")
                 let responseReturn = response.parseResponse()
                 print("Response Parse: \(responseReturn.debugDescription)")
+                
+                if let traceNumber = response.hostResponse.traceNumber {
+                    print("Response TraceNumber")
+                    print(traceNumber)
+                }
             }
         })
     }
@@ -188,5 +214,73 @@ private extension ConnectC2XViewController {
     enum UIUserInterfaceIdiom : Int {
         case phone // iPhone and iPod touch style UI
         case pad   // iPad style UI (also includes macOS Catalyst)
+    }
+}
+
+
+private extension ConnectC2XViewController {
+    
+    private func setupUpaDevice() -> HpsUpaDevice? {
+        let config = HpsConnectionConfig()
+        config.ipAddress = "192.168.31.117"
+        config.port = "8081"
+        config.connectionMode = HpsConnectionModes.TCP_IP.rawValue
+        return HpsUpaDevice(config: config)
+    }
+    
+    func testSaleApp() {
+        guard let device = setupUpaDevice() else {
+            print(" no device")
+            return
+        }
+        
+        if let builder = HpsUpaSaleBuilder(device: device) {
+            builder.amount = 15.00
+            builder.ecrId = "3"
+            
+            builder.execute(forUPAUSA: { upaResponse, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let upaResponse = upaResponse {
+                    if let referenceNumber = upaResponse.referenceNumber {
+                        
+                        let builderTipAjust = HpsUpaTipAdjustBuilder(with: device)
+                        let params = HpsUpaLineItemDisplayParams(lineItemLeft: "toothpaste",
+                                                                 lineItemRight: "$2.99")
+                        
+                        let transaction = HpsUpaTipAdjustTransaction(tipAmount: "10.00",
+                                                                     tranNo: nil,
+                                                                     invoiceNbr: nil,
+                                                                     referenceNumber: referenceNumber)
+                        
+                        let data = HpsUpaLineItemData(params: nil,
+                                                      transaction: transaction)
+                        let displayData = HpsUpaLineItemDisplayData(command: "TipAdjust", EcrId: "123",
+                                                                    requestId: "123", data: data)
+                        let request = HpsUpaLineItemDisplay(data: displayData)
+                        
+                        builderTipAjust.execute(request: request) { deviceResponse, result, error in
+                            if let error = error {
+                                print(error)
+                                return
+                            }
+                            
+                            if let result = result {
+                                print(" Result")
+                                print(result)
+                            }
+                            
+                            if let deviceResponse = deviceResponse {
+                                print(" deviceResponse ")
+                                print(deviceResponse)
+                            }
+                        }
+                    }
+                }
+            })
+        }
     }
 }
