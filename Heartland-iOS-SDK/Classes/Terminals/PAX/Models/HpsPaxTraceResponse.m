@@ -20,11 +20,10 @@
                 break;
             case 2:
                 self.timeStamp = value;
-                break; 
-            case 6:
-                self.originalTransID = value;
                 break;
-            
+            case 6:
+                self.ecrRefNumber = value;
+                break;
             default:
                 break;
         }
