@@ -38,13 +38,6 @@ class ConnectC2XViewController: UIViewController {
         config.versionNumber = ""
         config.timeout = timeout
 
-<<<<<<< HEAD
-        self.device = HpsC2xDevice(config: config)
-        self.device?.deviceDelegate = self
-        self.device?.scan()
-        self.activityIndicator.isHidden = false
-        
-=======
         device = HpsC2xDevice(config: config)
         device?.deviceDelegate = self
         device?.scan()
@@ -53,39 +46,21 @@ class ConnectC2XViewController: UIViewController {
         
 //        testSaleApp()
 //        testPaxDeviceManual()
->>>>>>> 493e0f0 (Prep 2.0.11 SDK release)
     }
     
     func testPaxDeviceManual() {
         let timeout = 120
 
         let config = HpsConnectionConfig()
-<<<<<<< HEAD
-        config.ipAddress = "192.168.15.2"
-        config.port = "10009"
-        config.username = ""
-        config.password = ""
-        config.siteID = "";
-        config.deviceID = ""
-        config.licenseID = ""
-        config.developerID = ""
-        config.versionNumber = ""
-=======
         config.ipAddress = "192.168.31.81"
         config.port = "10009"
->>>>>>> 493e0f0 (Prep 2.0.11 SDK release)
         config.connectionMode = 1
         config.timeout = timeout
 
         self.paxDevice = HpsPaxDevice(config: config)
 
-<<<<<<< HEAD
-        let builder = HpsPaxCreditSaleBuilder(device: self.paxDevice)
-        builder?.amount = 11.0
-=======
         let builder = HpsPaxCreditSaleBuilder(device: paxDevice)
         builder?.amount = 12.0
->>>>>>> 493e0f0 (Prep 2.0.11 SDK release)
         builder?.referenceNumber = 10
         builder?.allowDuplicates = false
 
