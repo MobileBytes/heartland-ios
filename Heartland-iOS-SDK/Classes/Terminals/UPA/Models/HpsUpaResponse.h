@@ -55,7 +55,6 @@
 @property (nonatomic,strong) NSString *requestId;
 
 @property (nonatomic,strong) NSString *cvvResultText;
-@property (nonatomic,strong) NSString *cardBrandTransactionId;
 
     //Batch
 @property (nonatomic,strong) NSString *deviceId;
