@@ -5,8 +5,6 @@
 
 import Foundation
 
-import Foundation
-
 public struct HpsUpaSafResponse: Codable {
     public let message: String?
     public let data: HpsUpaResponsePayload<HpsUpaSafResponseData>?
@@ -17,7 +15,8 @@ public struct HpsUpaSafResponse: Codable {
     }
 }
 
-public struct HpsUpaSafResponseData: Codable {
+@objcMembers
+public class HpsUpaSafResponseData: NSObject, Codable {
     public let multipleMessage: String?
     public let terminalId: String?
     public let terminalNumber: String?
@@ -35,10 +34,12 @@ public struct HpsUpaSafResponseData: Codable {
         self.terminalId = terminalId
         self.terminalNumber = terminalNumber
         self.safDetails = safDetails
+        super.init()
     }
 }
 
-public struct HpsUpaSafDetail: Codable {
+@objcMembers
+public class HpsUpaSafDetail: NSObject, Codable {
     public let safType, safCount: String?
     public let safTotal: String?
     public let safRecords: [HpsUpaSafRecord]?
@@ -55,10 +56,12 @@ public struct HpsUpaSafDetail: Codable {
         self.safCount = safCount
         self.safTotal = safTotal
         self.safRecords = safRecords
+        super.init()
     }
 }
 
-public struct HpsUpaSafRecord: Codable {
+@objcMembers
+public class HpsUpaSafRecord: NSObject, Codable {
     public let totalAmount: String?
     public let authorizedAmount: String?
     public let transNo: String?
@@ -99,5 +102,6 @@ public struct HpsUpaSafRecord: Codable {
         self.requestAmount = requestAmount
         self.invoiceNbr = invoiceNbr
         self.clertId = clertId
+        super.init()
     }
 }
