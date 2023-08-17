@@ -6,8 +6,8 @@
 
 import Foundation
 
-struct HpsUpaGetSafConstants {
-    static let command = "GetSAFReport"
+public enum HpsUpaGetSafConstants {
+    public static let command = "GetSAFReport"
 }
 
 // MARK: - HpsUpaSendSaf
