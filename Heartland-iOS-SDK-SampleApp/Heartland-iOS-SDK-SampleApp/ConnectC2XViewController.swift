@@ -256,69 +256,69 @@ private extension ConnectC2XViewController {
 }
 
 
-private extension ConnectC2XViewController {
-    
-    private func setupUpaDevice() -> HpsUpaDevice? {
-        let config = HpsConnectionConfig()
-        config.ipAddress = "192.168.31.117"
-        config.port = "8081"
-        config.connectionMode = HpsConnectionModes.TCP_IP.rawValue
-        return HpsUpaDevice(config: config)
-    }
-    
-    func testSaleApp() {
-        guard let device = setupUpaDevice() else {
-            print(" no device")
-            return
-        }
-        
-        if let builder = HpsUpaSaleBuilder(device: device) {
-            builder.amount = 15.00
-            builder.ecrId = "3"
-            
-            builder.execute(forUPAUSA: { upaResponse, error in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                if let upaResponse = upaResponse {
-                    if let referenceNumber = upaResponse.referenceNumber {
-                        
-                        let builderTipAjust = HpsUpaTipAdjustBuilder(with: device)
-                        let params = HpsUpaLineItemDisplayParams(lineItemLeft: "toothpaste",
-                                                                 lineItemRight: "$2.99")
-                        
-                        let transaction = HpsUpaTipAdjustTransaction(tipAmount: "10.00",
-                                                                     tranNo: nil,
-                                                                     invoiceNbr: nil,
-                                                                     referenceNumber: referenceNumber)
-                        
-                        let data = HpsUpaLineItemData(params: nil,
-                                                      transaction: transaction)
-                        let displayData = HpsUpaLineItemDisplayData(command: "TipAdjust", EcrId: "123",
-                                                                    requestId: "123", data: data)
-                        let request = HpsUpaLineItemDisplay(data: displayData)
-                        
-                        builderTipAjust.execute(request: request) { deviceResponse, result, error in
-                            if let error = error {
-                                print(error)
-                                return
-                            }
-                            
-                            if let result = result {
-                                print(" Result")
-                                print(result)
-                            }
-                            
-                            if let deviceResponse = deviceResponse {
-                                print(" deviceResponse ")
-                                print(deviceResponse)
-                            }
-                        }
-                    }
-                }
-            })
-        }
-    }
-}
+//private extension ConnectC2XViewController {
+//
+//    private func setupUpaDevice() -> HpsUpaDevice? {
+//        let config = HpsConnectionConfig()
+//        config.ipAddress = "192.168.31.117"
+//        config.port = "8081"
+//        config.connectionMode = HpsConnectionModes.TCP_IP.rawValue
+//        return HpsUpaDevice(config: config)
+//    }
+//
+//    func testSaleApp() {
+//        guard let device = setupUpaDevice() else {
+//            print(" no device")
+//            return
+//        }
+//
+//        if let builder = HpsUpaSaleBuilder(device: device) {
+//            builder.amount = 15.00
+//            builder.ecrId = "3"
+//
+//            builder.execute(forUPAUSA: { upaResponse, error in
+//                if let error = error {
+//                    print(error)
+//                    return
+//                }
+//
+//                if let upaResponse = upaResponse {
+//                    if let referenceNumber = upaResponse.referenceNumber {
+//
+//                        let builderTipAjust = HpsUpaTipAdjustBuilder(with: device)
+//                        let params = HpsUpaLineItemDisplayParams(lineItemLeft: "toothpaste",
+//                                                                 lineItemRight: "$2.99")
+//
+//                        let transaction = HpsUpaTipAdjustTransaction(tipAmount: "10.00",
+//                                                                     tranNo: nil,
+//                                                                     invoiceNbr: nil,
+//                                                                     referenceNumber: referenceNumber)
+//
+//                        let data = HpsUpaLineItemData(params: nil,
+//                                                      transaction: transaction)
+//                        let displayData = HpsUpaLineItemDisplayData(command: "TipAdjust", EcrId: "123",
+//                                                                    requestId: "123", data: data)
+//                        let request = HpsUpaLineItemDisplay(data: displayData)
+//
+//                        builderTipAjust.execute(request: request) { deviceResponse, result, error in
+//                            if let error = error {
+//                                print(error)
+//                                return
+//                            }
+//
+//                            if let result = result {
+//                                print(" Result")
+//                                print(result)
+//                            }
+//
+//                            if let deviceResponse = deviceResponse {
+//                                print(" deviceResponse ")
+//                                print(deviceResponse)
+//                            }
+//                        }
+//                    }
+//                }
+//            })
+//        }
+//    }
+//}
