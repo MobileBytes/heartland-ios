@@ -76,6 +76,35 @@ class HpsUPASAFTests: XCTestCase {
         let response = try JSONDecoder().decode(HpsUpaSafResponse.self, from: data)
         XCTAssertEqual(response.data?.data?.safDetails?.count, 3)
     }
+
+    func testDeleteSAFExecute() {
+        let expectation = XCTestExpectation(description: "Wait for execution...")
+        let device = setupDevice()
+
+        guard let device else {
+            XCTFail("Device is nil")
+            return
+        }
+        
+        let builder = HpsUpaSAFTransactionBuilder(with: device)
+        
+        let deleteSAF = HpsUpaDeleteSaf(data: HpsUpaCommandPayload(
+            command: HpsUpaDeleteSafConstants.command,
+            ecrId: "123",
+            requestId: "123",
+            data: HpsUpaDeleteSafData.init(transaction: HpsUpaDeleteSafTransaction.init(tranNo: "1", safReferenceNumber: "11"))
+        ))
+        
+        builder.execute(request: deleteSAF, response: { response, deleteSafResponse, error in
+            XCTAssertNotNil(response)
+            XCTAssertNotNil(deleteSafResponse)
+            XCTAssertNil(error)
+
+            expectation.fulfill()
+        })
+        
+        wait(for: [expectation], timeout: 1000)
+    }
 }
 
 fileprivate enum MBUPASAFMockPayload {

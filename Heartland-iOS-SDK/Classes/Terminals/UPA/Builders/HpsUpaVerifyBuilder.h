@@ -19,8 +19,6 @@
 @property (nonatomic, readwrite) HpsStoredCardInitiator storedCardInitiator;
 @property (nonatomic, strong) NSString *cardBrandTransactionId;
 
-// HSA/FSA Values
-
 - (void) execute:(void(^)(HpsUpaResponse*, NSError*))responseBlock;
 - (id)initWithDevice: (HpsUpaDevice*)upaDevice;
 

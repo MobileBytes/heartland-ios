@@ -35,7 +35,6 @@
         request.data.data.params.cardOnFileIndicator = HpsStoredCardInitiator_toString[self.storedCardInitiator];
     }
     
-    
     [device processTransactionWithRequest:request withResponseBlock:^(id<IHPSDeviceResponse> response, NSString *json, NSError * error) {
         if (error != nil) {
             responseBlock(nil, error);
