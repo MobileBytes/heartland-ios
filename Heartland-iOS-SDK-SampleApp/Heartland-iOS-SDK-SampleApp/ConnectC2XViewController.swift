@@ -41,7 +41,7 @@ class ConnectC2XViewController: UIViewController {
         device = HpsC2xDevice(config: config)
         device?.deviceDelegate = self
         device?.scan()
-        print(" Is Device Connected?: \(device?.isConnected())")
+//        print(" Is Device Connected?: \(device?.isConnected())")
         activityIndicator.isHidden = false
         
 //        testSaleApp()
@@ -213,7 +213,7 @@ private extension ConnectC2XViewController {
             builder.amount = 15.00
             builder.ecrId = "3"
             
-            builder.execute(forUPAUSA: { upaResponse, error in
+            builder.execute({ upaResponse, error in
                 if let error = error {
                     print(error)
                     return
