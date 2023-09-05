@@ -200,14 +200,6 @@ static int IsFieldEnable;
     return [self.status isEqualToString:@"Success"];
 }
 
-/// combines device response code & message
-- (NSString *)responseDescription {
-    NSMutableArray *parts = [NSMutableArray new];
-    if (self.deviceResponseCode) [parts addObject:self.deviceResponseCode];
-    if (self.deviceResponseMessage) [parts addObject:self.deviceResponseMessage];
-    return ![parts count] ? nil : [parts componentsJoinedByString:@" - "];
-}
-
 // MARK: Error
 
 /// message should be in the format:
@@ -248,9 +240,19 @@ static int IsFieldEnable;
     if ([self isSuccess]) { return nil; }
     NSString *domain = @"com.mobilebytes.upa";
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
-    [userInfo setValue:[self responseDescription] forKey:NSLocalizedDescriptionKey];
-    [userInfo setValue:self.gatewayRspMsg forKey:NSLocalizedFailureReasonErrorKey];
+    [userInfo setValue:[self responseErrorDescription] forKey:NSLocalizedDescriptionKey];
     return [NSError errorWithDomain:domain code:1 userInfo:userInfo];
+}
+
+- (NSString *_Nullable)responseErrorDescription {
+    if ([self isSuccess]) { return nil; }
+    NSArray *(^details)(id, id) = ^(id code, id message){
+        return code && message ? @[code, message] : nil;
+    };
+    NSArray *parts = (details(self.responseCode, self.responseText) // Issuer Info
+                      ?: details(self.gatewayRspCode, self.gatewayRspMsg) // Gateway Info
+                      ?: details(self.deviceResponseCode, self.deviceResponseMessage)); // Device Info
+    return [parts componentsJoinedByString:@" - "];
 }
 
 @end
