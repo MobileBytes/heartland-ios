@@ -2,7 +2,7 @@
 //  BBDeviceController.h
 //
 //  Created by Alex Wong on 2017-08-18.
-//  Copyright © 2021 BBPOS International Limited. All rights reserved. All software, both binary and source code published by BBPOS International Limited (hereafter BBPOS) is copyrighted by BBPOS and ownership of all right, title and interest in and to the software remains with BBPOS.
+//  Copyright © 2022 BBPOS International Limited. All rights reserved. All software, both binary and source code published by BBPOS International Limited (hereafter BBPOS) is copyrighted by BBPOS and ownership of all right, title and interest in and to the software remains with BBPOS.
 //  RESTRICTED DOCUMENT
 //
 
@@ -10,15 +10,17 @@
 #import "BBDeviceCAPK.h"
 #import "BBDeviceVASMerchantConfig.h"
 
-//For iOS
+#if TARGET_OS_OSX
+// macOS
+#import <AppKit/AppKit.h>
+#import <IOBluetooth/IOBluetooth.h>
+#import <CoreBluetooth/CoreBluetooth.h>
+#else
+// iOS
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <ExternalAccessory/ExternalAccessory.h>
-
-//For macOS
-//#import <AppKit/AppKit.h>
-//#import <IOBluetooth/IOBluetooth.h>
-//#import <CoreBluetooth/CoreBluetooth.h>
+#endif
 
 typedef NS_ENUM (NSUInteger, BBDeviceControllerState) {
     BBDeviceControllerState_CommLinkUninitialized = 0,
@@ -70,41 +72,46 @@ typedef NS_ENUM (NSUInteger, BBDeviceErrorType) {
     BBDeviceErrorType_InvalidInput_InvalidDataFormat = 3,
     BBDeviceErrorType_InvalidInput_NotAcceptAmountForThisTransactionType = 4,
     BBDeviceErrorType_InvalidInput_NotAcceptCashbackForThisTransactionType = 5,
-
+    
     BBDeviceErrorType_Unknown = 6,
     BBDeviceErrorType_IllegalStateException = 7,
-
+    
     BBDeviceErrorType_CommError = 8,
     BBDeviceErrorType_CommandNotAvailable = 9,
     BBDeviceErrorType_DeviceBusy = 10,
-
+    
     BBDeviceErrorType_CommLinkUninitialized = 11,
     BBDeviceErrorType_InvalidFunctionInCurrentConnectionMode = 12,
-
+    
     BBDeviceErrorType_AudioFailToStart = 13,
     BBDeviceErrorType_AudioFailToStart_OtherAudioIsPlaying = 14,
     BBDeviceErrorType_AudioRecordingPermissionDenied = 15,
     BBDeviceErrorType_AudioBackgroundTimeout = 16,
-
+    
     BBDeviceErrorType_BTv4NotSupported = 17,
     BBDeviceErrorType_BTFailToStart = 18,
     BBDeviceErrorType_BTAlreadyConnected = 19,
-
+    
     BBDeviceErrorType_HardwareNotSupported = 20,
     BBDeviceErrorType_PCIError = 21,
-
+    
     BBDeviceErrorType_BLESecureConnectionNotSupported = 22, //BT 4.2
     BBDeviceErrorType_PairingError = 23,
     BBDeviceErrorType_PairingError_IncorrectPasskey = 24,
     BBDeviceErrorType_PairingError_AlreadyPairedWithAnotherDevice = 25,
-
+    
     BBDeviceErrorType_BTUnauthorized = 26,
-
+    
     BBDeviceErrorType_ContactlessError = 27,
-
+    
     BBDeviceErrorType_PairingError_PeerRemovedPairingInformation = 28,
-
+    
     BBDeviceErrorType_NotCompatibleError = 29,
+    
+    BBDeviceErrorType_Tamper = 30,
+    BBDeviceErrorType_IntegrityCheckError = 31,
+    
+    BBDeviceErrorType_USBFailToStart = 32,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceTransactionResult) {
@@ -183,6 +190,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceDisplayText) {
     BBDeviceDisplayText_INVALID_INPUT = 37,
     BBDeviceDisplayText_CARD_ERROR = 38,
     BBDeviceDisplayText_TOO_MANY_TAPS = 39,
+    BBDeviceDisplayText_CARD_IS_STILL_INSERTED = 40,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceTerminalSettingStatus) {
@@ -194,6 +202,8 @@ typedef NS_ENUM (NSUInteger, BBDeviceTerminalSettingStatus) {
     BBDeviceTerminalSettingStatus_TagNotAllowedToAccess = 5,
     BBDeviceTerminalSettingStatus_TagNotWrittenCorrectly = 6,
     BBDeviceTerminalSettingStatus_InvalidValue = 7,
+    BBDeviceTerminalSettingStatus_TagNotUpdated = 8,
+    BBDeviceTerminalSettingStatus_Unknown = 9,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceCheckCardMode) {
@@ -247,6 +257,7 @@ typedef NS_ENUM (NSUInteger, BBDevicePinEntryResult) {
     BBDevicePinEntryResult_ByPass = 3,
     BBDevicePinEntryResult_IncorrectPinLength = 4,
     BBDevicePinEntryResult_IncorrectPin = 5,
+    BBDevicePinEntryResult_IccRemoved = 6,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceCurrencyCharacter) {
@@ -294,6 +305,12 @@ typedef NS_ENUM (NSUInteger, BBDeviceCurrencyCharacter) {
     BBDeviceCurrencyCharacter_Rupiah = 41,
     BBDeviceCurrencyCharacter_Sol = 42,
     BBDeviceCurrencyCharacter_Peso = 43,
+    BBDeviceCurrencyCharacter_Forint = 44,
+    BBDeviceCurrencyCharacter_Krona = 45,
+    BBDeviceCurrencyCharacter_Krone = 46,
+    BBDeviceCurrencyCharacter_Lei = 47,
+    BBDeviceCurrencyCharacter_Real = 48,
+    BBDeviceCurrencyCharacter_Zloty = 49,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceAmountInputType) {
@@ -313,6 +330,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceOtherAmountOption) {
 typedef NS_ENUM (NSUInteger, BBDevicePinEntrySource) {
     BBDevicePinEntrySource_Phone = 0,
     BBDevicePinEntrySource_Keypad = 1,
+    BBDevicePinEntrySource_Accessible = 2,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceCardScheme) {
@@ -357,6 +375,13 @@ typedef NS_ENUM (NSUInteger, BBDevicePhoneEntryResult) {
     BBDevicePhoneEntryResult_WrongLength = 2,
     BBDevicePhoneEntryResult_Cancel = 3,
     BBDevicePhoneEntryResult_Bypass = 4,
+};
+
+typedef NS_ENUM (NSUInteger, BBDeviceAmountInputResult) {
+    BBDeviceAmountInputResult_Success = 0,
+    BBDeviceAmountInputResult_Cancel = 1,
+    BBDeviceAmountInputResult_Timeout = 2,
+    BBDeviceAmountInputResult_InvalidAmount = 3,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceAccountSelectionResult) {
@@ -432,6 +457,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceDeviceResetReason) {
     BBDeviceDeviceResetReason_AppResetDevice = 1,
     BBDeviceDeviceResetReason_FirmwareSelfTest = 2,
     BBDeviceDeviceResetReason_RecoveryAttempt = 3,
+    BBDeviceDeviceResetReason_WatchdogTimeout = 4,
 };
 
 typedef NS_ENUM (NSUInteger, BBDeviceReadRSSIResult) {
@@ -442,7 +468,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceReadRSSIResult) {
     BBDeviceReadRSSIResult_NoConnection = 4,
 };
 
-typedef NS_ENUM (NSUInteger, BBDeviceDebugLogType) {
+typedef NS_ENUM (NSUInteger, BBDeviceDebugLogType) { // onReturnDebugLog
     BBDeviceDebugLogType_Function,
     BBDeviceDebugLogType_Callback,
     BBDeviceDebugLogType_ExtraDebugMessage,
@@ -473,7 +499,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 
 @interface BBDeviceController : NSObject {
     id <BBDeviceControllerDelegate> delegate;
-
+    
     BOOL debugLogEnabled;
     BOOL detectAudioDevicePlugged;
 }
@@ -513,6 +539,9 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 - (NSString *)getPeripheralUUID:(CBPeripheral *)peripheral; //For BT4 only, not for BT2
 - (NSObject *)getConnectedBTDevice;
 
+- (void)enableBluetooth;
+- (void)disableBluetooth; // Disable Bluetooth boardcasting when using USB channel.
+
 // Communication Channel - USB (For macOS, not for iOS)
 - (void)startUsb;
 - (void)stopUsb;
@@ -539,6 +568,10 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 // ----------------------------------------- Standby Mode -----------------------------------------------
 
 - (void)enterStandbyMode;
+
+// ----------------------------------------- Watchdog Timer -----------------------------------------------
+
+- (void)resetWatchdogTimer;
 
 // ----------------------------------------- LED -----------------------------------------------
 
@@ -695,6 +728,13 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 - (void)setSPoCController:(NSObject *)controller;
 - (void)setupSPoCSecureSession:(NSDictionary *)data;
 
+// ----------------------------------------- VirtuCrypt -----------------------------------------------
+
+- (void)virtuCryptPEDIRequest;
+- (void)sendVirtuCryptPEDIResponse:(NSDictionary *)data;
+- (void)virtuCryptPEDKRequest;
+- (void)sendVirtuCryptPEDKResponse:(NSDictionary *)data;
+
 @end
 
 
@@ -718,6 +758,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 - (void)onPowerConnected:(BBDevicePowerSource)powerSource batteryStatus:(BBDeviceBatteryStatus)batteryStatus NS_SWIFT_NAME(onPowerConnected(powerSource:batteryStatus:));
 - (void)onPowerDisconnected:(BBDevicePowerSource)powerSource NS_SWIFT_NAME(onPowerDisconnected(powerSource:));
 - (void)onEnterStandbyMode;
+- (void)onReturnWatchdogTimerReset;
 
 // ----------------------------------------- Device Reset Event -----------------------------------------------
 
@@ -747,9 +788,10 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 - (void)onBTDisconnected;
 - (void)onRequestEnableBluetoothInSettings;
 - (void)onBTReturnReadRSSIResult:(BBDeviceReadRSSIResult)result RSSI:(NSNumber *)RSSI message:(NSString *)message NS_SWIFT_NAME(onBTReturnReadRSSIResult(result:RSSI:message:));
+- (void)onBTRequestPairing; // Bluetooth 4.2
 
-// BT 4.2
-- (void)onBTRequestPairing;
+- (void)onReturnEnableBluetoothResult:(BOOL)isSuccess NS_SWIFT_NAME(onReturnEnableBluetoothResult(isSuccess:));
+- (void)onReturnDisableBluetoothResult:(BOOL)isSuccess NS_SWIFT_NAME(onReturnDisableBluetoothResult(isSuccess:));
 
 // Communication Channel - USB (For macOS, not for iOS)
 - (void)onUsbConnected;
@@ -797,7 +839,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 // Set Amount on device with keypad before startEmv
 - (void)onReturnEnableInputAmountResult:(BOOL)isSuccess;
 - (void)onReturnDisableInputAmountResult:(BOOL)isSuccess;
-- (void)onReturnAmount:(NSDictionary *)data;
+- (void)onReturnAmount:(BBDeviceAmountInputResult)result data:(NSDictionary *)data NS_SWIFT_NAME(onReturnAmount(result:data:));
 
 // PIN entry on device with keypad or with PBOC firmware
 - (void)onRequestPinEntry:(BBDevicePinEntrySource)pinEntrySource NS_SWIFT_NAME(onRequestPinEntry(pinEntrySource:));
@@ -915,5 +957,12 @@ typedef NS_ENUM (NSUInteger, BBDeviceSPoCError) {
 - (void)onSPoCAttestationRescheduled;
 - (void)onSPoCSetupSecureSessionCompleted;
 - (void)onSPoCReturnProgress:(float)percentage;
+
+// -------------------------------------- VirtuCrypt --------------------------------------------
+
+- (void)onRequestVirtuCryptPEDIResponse:(BOOL)isSuccess data:(NSDictionary *)data;
+- (void)onReturnVirtuCryptPEDICommandResult:(BOOL)isSuccess data:(NSDictionary *)data;
+- (void)onRequestVirtuCryptPEDKResponse:(BOOL)isSuccess data:(NSDictionary *)data;
+- (void)onReturnVirtuCryptPEDKCommandResult:(BOOL)isSuccess data:(NSDictionary *)data;
 
 @end

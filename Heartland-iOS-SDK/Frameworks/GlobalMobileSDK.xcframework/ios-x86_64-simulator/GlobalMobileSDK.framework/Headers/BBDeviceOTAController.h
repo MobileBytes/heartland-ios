@@ -2,7 +2,7 @@
 //  BBDeviceOTAController.h
 //
 //  Created by Alex Wong on 2017-08-18.
-//  Copyright © 2020 BBPOS Limited. All rights reserved.
+//  Copyright © 2021 BBPOS International Limited. All rights reserved. All software, both binary and source code published by BBPOS International Limited (hereafter BBPOS) is copyrighted by BBPOS and ownership of all right, title and interest in and to the software remains with BBPOS.
 //  RESTRICTED DOCUMENT
 //
 
@@ -15,7 +15,7 @@ typedef NS_ENUM (NSUInteger, BBDeviceOTAState) {
 
 typedef NS_ENUM (NSUInteger, BBDeviceOTAResult) {
     BBDeviceOTAResult_Success,
-    BBDeviceOTAResult_SetupError,
+    BBDeviceOTAResult_SetupError, 
     BBDeviceOTAResult_BatteryLowError,
     BBDeviceOTAResult_DeviceCommError,
     BBDeviceOTAResult_ServerCommError,
@@ -27,14 +27,6 @@ typedef NS_ENUM (NSUInteger, BBDeviceOTAResult) {
     BBDeviceOTAResult_IncompatibleConfigHex
 };
 
-typedef NS_ENUM (NSUInteger, BBDeviceTargetVersionType) {
-    BBDeviceTargetVersionType_Firmware,
-    BBDeviceTargetVersionType_Config,
-    BBDeviceTargetVersionType_KeyProfile
-};
-
-// --------------------------- For WisePad1 Only --------------------------------
-
 typedef NS_ENUM (NSUInteger, BBDeviceFirmwareType) {
     BBDeviceFirmwareType_MainProcessor,
     BBDeviceFirmwareType_Coprocessor
@@ -45,7 +37,17 @@ typedef NS_ENUM (NSUInteger, BBDeviceConfigType) {
     BBDeviceConfigType_CustomizedConfig  // Terminal ID (9F1C), Terminal Country Code (9F1A), Transaction Currency Code (5F2A), Merchant Name and Location (9F4E), Merchant ID (9F16)
 }; //For WisePad 1 only
 
-// --------------------------- End of WisePad1 Enum --------------------------------
+typedef NS_ENUM (NSUInteger, BBDeviceTargetVersionType) {
+    BBDeviceTargetVersionType_Firmware,
+    BBDeviceTargetVersionType_Config,
+    BBDeviceTargetVersionType_KeyProfile
+};
+
+typedef NS_ENUM (NSUInteger, BBDeviceOTADebugLogType) {
+    BBDeviceOTADebugLogType_Function,
+    BBDeviceOTADebugLogType_Callback,
+    BBDeviceOTADebugLogType_ExtraDebugMessage,
+};
 
 @protocol BBDeviceOTAControllerDelegate;
 
@@ -101,5 +103,21 @@ typedef NS_ENUM (NSUInteger, BBDeviceConfigType) {
 - (void)onReturnTargetVersionListResult:(BBDeviceOTAResult)result list:(NSArray *)list responseMessage:(NSString *)responseMessage;
 
 - (void)onReturnOTAProgress:(float)percentage;
+- (void)onReturnOTADebugLog:(NSDictionary *)data;
 
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
