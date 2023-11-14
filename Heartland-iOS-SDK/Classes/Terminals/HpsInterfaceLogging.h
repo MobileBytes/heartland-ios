@@ -11,6 +11,7 @@
 
 @protocol HpsInterfaceLogging <NSObject>
 
+- (void)willSendDataToHpsInterface:(NSData *)data writeByteIndex:(NSUInteger)writeByteIndex;
 - (void)hpsInterfaceDidDisconnect;
 - (void)hpsInterfaceDidReceiveData:(NSData *)data;
 - (void)hpsInterfaceDidReceiveError:(NSError *)error;

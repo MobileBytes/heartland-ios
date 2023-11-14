@@ -137,6 +137,10 @@
 
 - (void)writeBytesToStream:(NSOutputStream *)stream {
     if (_outputBuffer == nil) return;
+    if (_config.shouldLogSends) {
+        [_config.logger willSendDataToHpsInterface:[_outputBuffer copy]
+                                    writeByteIndex:_writeByteIndex];
+    }
     uint8_t *bytes = (uint8_t *)[_outputBuffer mutableBytes];
     bytes += _writeByteIndex;
     NSUInteger dataLen = [_outputBuffer length];
