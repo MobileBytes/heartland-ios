@@ -126,6 +126,7 @@ static int IsFieldEnable;
 
     if ([data has:@"payment"]) {
         JsonDoc* payment = [data get:@"payment"];
+        self.cardGroup = [payment getValueAsString:@"cardGroup"];
         self.cardType = [payment getValueAsString:@"cardType"];
         self.paymentType = [payment getValueAsString:@"paymentType"];
         self.entryMethod = [payment getValueAsString:@"cardAcquisition"];
