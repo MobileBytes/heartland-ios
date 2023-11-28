@@ -48,6 +48,7 @@
 @property (nonatomic,strong) NSString *resultText;
 @property (nonatomic,strong) NSString *responseCode;
 @property (nonatomic,strong) NSString *cardAcquisition;
+@property (nonatomic,strong) NSString *cardGroup;
 @property (nonatomic,strong) NSString *signatureLine;
 @property (nonatomic,strong) NSString *pinVerified;
 @property (nonatomic,strong) NSString *result;
