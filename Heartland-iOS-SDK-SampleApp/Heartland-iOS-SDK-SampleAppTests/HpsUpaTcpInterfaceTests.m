@@ -29,10 +29,6 @@
     [self.delegate tcpInterfaceDidOpenStream];
 }
 
-- (void)closeConnection {
-    [self.delegate tcpInterfaceDidCloseStreams];
-}
-
 - (void)sendData:(NSData *)data onOpen:(BOOL)onOpen {
     if (_sendDataOnOpenBlock) {
         _sendDataOnOpenBlock(data, onOpen);
