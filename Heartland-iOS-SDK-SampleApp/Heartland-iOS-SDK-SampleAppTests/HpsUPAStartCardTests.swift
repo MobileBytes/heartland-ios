@@ -8,12 +8,17 @@ import Foundation
 import XCTest
 
 class HpsStartCardLoggerMock: NSObject, HpsInterfaceLogging {
+    func willSendData(toHpsInterface data: Data!, writeByteIndex: UInt) {
+        let description = String(data: data, encoding: .utf8) ?? ""
+        print("willSendData(toHpsInterface:) - \(description)")
+    }
+    
     func hpsInterfaceDidDisconnect() {
     }
 
     func hpsInterfaceDidReceive(_ data: Data!) {
         let description = String(data: data, encoding: .utf8) ?? ""
-        print("hpsInterfaceDidReceive - \(String(data: data, encoding: .utf8) ?? "")")
+        print("hpsInterfaceDidReceive - \(description)")
     }
 
     func hpsInterfaceDidReceiveError(_ error: Error!) {
