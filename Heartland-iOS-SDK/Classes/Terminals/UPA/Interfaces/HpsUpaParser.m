@@ -57,6 +57,8 @@
             return @"UPA device connection closed unexpectedly";
         case MBUPAErrorTypeCommunicationInvalidMessage:
             return @"Invalid message received from UPA device";
+        case MBUPAErrorTypeConcurrentMessages:
+            return @"Another UPA communication is currently in progress";
         default:
             return @"Unknown UPA Error";
     }

@@ -70,6 +70,7 @@
 		DD713FCD2948DCB500514143 /* GlobalPaymentsApi.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD6A4F822937CD55008B8165 /* GlobalPaymentsApi.xcframework */; };
 		DD8CECF9294CC7370006908F /* HpsUPAStartCardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8CECF8294CC7370006908F /* HpsUPAStartCardTests.swift */; };
 		DDFF6556299FC348004D41BF /* HpsUPASAFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFF6555299FC348004D41BF /* HpsUPASAFTests.swift */; };
+		EF4890E22BA206B100DF80C6 /* HpsUpaTcpInterfaceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4890E12BA206B100DF80C6 /* HpsUpaTcpInterfaceTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +164,7 @@
 		DD8CECF7294CC7360006908F /* Heartland-iOS-SDK-SampleAppTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Heartland-iOS-SDK-SampleAppTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		DD8CECF8294CC7370006908F /* HpsUPAStartCardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HpsUPAStartCardTests.swift; sourceTree = "<group>"; };
 		DDFF6555299FC348004D41BF /* HpsUPASAFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HpsUPASAFTests.swift; sourceTree = "<group>"; };
+		EF4890E12BA206B100DF80C6 /* HpsUpaTcpInterfaceTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HpsUpaTcpInterfaceTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -298,6 +300,7 @@
 				DD713F992948DC7400514143 /* HpsJsonDocTests.m */,
 				DD713F962948DC7300514143 /* HpsPayRollTests.m */,
 				DD713F952948DC7300514143 /* HpsTableServicesTest.m */,
+				EF4890E12BA206B100DF80C6 /* HpsUpaTcpInterfaceTests.m */,
 				14F88D5E2A02E3AB009E821B /* HpsUPACATests.swift */,
 				DD8CECF8294CC7370006908F /* HpsUPAStartCardTests.swift */,
 				DD49DDB3296DDAE000EBD526 /* HpsUPALineItemDisplayTests.swift */,
@@ -460,6 +463,7 @@
 				DD713FC72948DC7500514143 /* Hps_Hpa_Admin_Test.m in Sources */,
 				DD713FB42948DC7500514143 /* HpsTableServicesTest.m in Sources */,
 				DD713FB62948DC7500514143 /* Hps_Hpa_Gift_Test.m in Sources */,
+				EF4890E22BA206B100DF80C6 /* HpsUpaTcpInterfaceTests.m in Sources */,
 				DD713FBC2948DC7500514143 /* Hps_UPA_VRF_Test.m in Sources */,
 				DD713FC52948DC7500514143 /* Hps_Pax_Batch_Tests.m in Sources */,
 				14B86EFE29B02C3B00657AF3 /* C2XTransactionsTests.swift in Sources */,
@@ -657,7 +661,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GY7QL9RND6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Heartland-iOS-SDK-SampleApp/Info.plist";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Bluetooth Peripheral";
@@ -692,7 +696,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GY7QL9RND6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Heartland-iOS-SDK-SampleApp/Info.plist";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Bluetooth Peripheral";
@@ -726,7 +730,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GY7QL9RND6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -756,7 +760,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GY7QL9RND6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
