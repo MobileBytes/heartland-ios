@@ -46,7 +46,6 @@
 @property (nonatomic,strong) NSString *response;
 @property (nonatomic,strong) NSString *multipleMessage;
 @property (nonatomic,strong) NSString *resultText;
-@property (nonatomic,strong) NSString *responseCode;
 @property (nonatomic,strong) NSString *cardAcquisition;
 @property (nonatomic,strong) NSString *cardGroup;
 @property (nonatomic,strong) NSString *signatureLine;

@@ -156,6 +156,11 @@ public extension GMSDevice {
         gmsWrapper?.terminalOTADelegate = self
         gmsWrapper?.requestToStartUpdateFor(type: .firmware)
     }
+    
+    func requestUpdateConfigForDevice() {
+        gmsWrapper?.terminalOTADelegate = self
+        gmsWrapper?.requestToStartUpdateFor(type: .config)
+    }
 
     func requestTerminalVersionData() {
         gmsWrapper?.terminalOTADelegate = self

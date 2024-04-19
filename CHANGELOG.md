@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.15 2024-02-22
+- C2X/C3X - Add RKI and update Configuration file
+- Update code to allow for Firmware delegates to be accessible in Objc-C
+- Iframe sample
+- Cancel/ Reset command does nothing
+
+## 2.0.13 2023-10-03
+- UPA -  Test SAFType on SendSAF
+- Verify SDKs for PAX
+- C2X Issuer Response Code incorrect
+- PAX-Support response code 000002 - PARTIALLY APPROVED
+- C3X - GlobalMobileSDK to Heartland-iOS-SDK
+- C3X - Update Heartland-iOS-SDK to support C3X Device
+- C2X - OTA Configuration Update
+- Added Transaction ID on Sample App Transaction Screen.
+- Added Allow Partial Auth Toggle on Sample App Transaction Screen.
+- Added Healthcare fields on Sample App Transaction Screen.
+
 ## 2.0.12 2023-08-22
 - Improved the C2X Sample App
 - Added UPA Sample App
