@@ -193,5 +193,4 @@ static BOOL _isMessaging;
     NSString *jsonString = [HpsUpaParser jsonStringFromUPARaw:data];
     [self setHandlerJSONString:jsonString];
 }
-
 @end
