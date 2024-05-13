@@ -1,6 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.19 2024-05-09
+- iOS SDK: Pax_Cancel Command on HTTP Mode
+- iOS SDK: Pay App New Sale and Refund Parameters
+- iOS SDK: HPA / iOS SDK - TSI and TVR fields are not returned in the response
+
+## 2.0.18 2024-04-25
+- iOS SDK: Fix for C3X/C2X Surcharge 
+
+## 2.0.16 2024-03-21
+- iOS SDK: Pay App (UPA) - Add DeletePreAuth 
+- iOS SDK: Add fallback to Pay App 2.18
+- iOS SDK: Add ServiceCode Parameter to Pay App
+- Updated the expDate parameter to expiryDate
+- iOS SDK: C3X/C2X Surcharge 
+
 ## 2.0.15 2024-02-22
 - C2X/C3X - Add RKI and update Configuration file
 - Update code to allow for Firmware delegates to be accessible in Objc-C

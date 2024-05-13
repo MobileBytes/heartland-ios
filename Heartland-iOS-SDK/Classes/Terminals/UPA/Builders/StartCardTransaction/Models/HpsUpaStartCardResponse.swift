@@ -23,13 +23,15 @@ public struct HpsUpaStartCardResponseData: Codable {
     public let acquisitionType, luhnCheckPassed, dataEncryptionType: String?
     public let pan: HpsUpaStartCardResponsePan?
     public let emvTags: String?
-    public let expDate: String?
+    public let expiryDate: String?
     public let cvv: String?
     public let scannedData: String?
     public let pinDUKPT: HpsUpaStartCardResponsePinDukpt?
     public let threeDesDukpt: HpsUpaStartCardResponse3DesDukpt?
     public let trackData: HpsUpaStartCardResponseTrackData?
     public let host: UpsUpaStartCardResponseHost?
+    public let serviceCode: String?
+    public let fallBack: String?
 
     enum CodingKeys: String, CodingKey {
         case acquisitionType
@@ -37,28 +39,34 @@ public struct HpsUpaStartCardResponseData: Codable {
         case pan = "PAN"
         case emvTags = "EmvTags"
         case dataEncryptionType
-        case expDate
+        case expiryDate
         case cvv = "Cvv"
         case scannedData = "ScannedData"
         case pinDUKPT = "PinDUKPT"
         case threeDesDukpt = "3DesDukpt"
         case trackData
         case host
+        case fallBack = "fallback"
+        case serviceCode
     }
 
-    public init(acquisitionType: String?, luhnCheckPassed: String?, dataEncryptionType: String?, pan: HpsUpaStartCardResponsePan?, emvTags: String?, expDate: String?, cvv: String?, scannedData: String?, pinDUKPT: HpsUpaStartCardResponsePinDukpt?, threeDesDukpt: HpsUpaStartCardResponse3DesDukpt?, trackData: HpsUpaStartCardResponseTrackData?, host: UpsUpaStartCardResponseHost?) {
+    public init(acquisitionType: String?, luhnCheckPassed: String?, dataEncryptionType: String?, pan: HpsUpaStartCardResponsePan?, emvTags: String?, expiryDate: String?, cvv: String?, scannedData: String?, pinDUKPT: HpsUpaStartCardResponsePinDukpt?, threeDesDukpt: HpsUpaStartCardResponse3DesDukpt?, trackData: HpsUpaStartCardResponseTrackData?, host: UpsUpaStartCardResponseHost?,
+        fallBack: String?, serviceCode: String?) {
+        
         self.acquisitionType = acquisitionType
         self.luhnCheckPassed = luhnCheckPassed
         self.dataEncryptionType = dataEncryptionType
         self.pan = pan
         self.emvTags = emvTags
-        self.expDate = expDate
+        self.expiryDate = expiryDate
         self.cvv = cvv
         self.scannedData = scannedData
         self.pinDUKPT = pinDUKPT
         self.threeDesDukpt = threeDesDukpt
         self.trackData = trackData
         self.host = host
+        self.fallBack = fallBack
+        self.serviceCode = serviceCode
     }
 }
 
