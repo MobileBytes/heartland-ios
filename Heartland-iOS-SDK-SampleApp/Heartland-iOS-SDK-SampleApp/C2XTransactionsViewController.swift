@@ -44,7 +44,7 @@ class C2XTransactionsViewController: UIViewController {
     @IBOutlet weak var DialogView: UIView!
     @IBOutlet weak var dialogText: UILabel!
     @IBOutlet weak var dialogSpinner: UIActivityIndicatorView!
-   
+    
     
     // MARK: - Properties
     var mainTransaction: MainTransaction = .credit
@@ -56,7 +56,7 @@ class C2XTransactionsViewController: UIViewController {
             device?.transactionDelegate = self
         }
     }
-
+    
     var isDeviceConnected: Bool = false
     var terminalRefNumber: String?
     var clientTransactionId: String?
@@ -69,22 +69,25 @@ class C2XTransactionsViewController: UIViewController {
         }
     }
     var transactionAmount: NSDecimalNumber = 0.0
-
+    
+    // MARK: Introducing Local Builder for surcharge confirmation
+    var builder: HpsC2xBaseBuilder?
+    
     // MARK: - LifeCycle
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         addObserver()
         configureView()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         configureActions()
     }
-
+    
     private func addObserver() {
         let notificationName = Notification.Name(Constants.selectedDeviceNotification)
         notificationCenter.addObserver(self,
@@ -92,12 +95,12 @@ class C2XTransactionsViewController: UIViewController {
                                        name: notificationName,
                                        object: nil)
     }
-
+    
     private func configureView() {
         DialogView.layer.cornerRadius = 10
         amountTextField.keyboardType = .decimalPad
         gratuityTextField.keyboardType = .decimalPad
-
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleContainerViewTap))
         containerView.addGestureRecognizer(tapGesture)
     }
@@ -112,8 +115,8 @@ private extension C2XTransactionsViewController {
                                         for: .touchUpInside)
         
         self.manualCardTransactionButton.addTarget(self,
-                                        action: #selector(manualTransactionButtonAction(_:)),
-                                        for: .touchUpInside)
+                                                   action: #selector(manualTransactionButtonAction(_:)),
+                                                   for: .touchUpInside)
         self.creditVoidButton.addTarget(self,
                                         action: #selector(creditVoidTransactionButtonAction(_:)),
                                         for: .touchUpInside)
@@ -134,14 +137,14 @@ private extension C2XTransactionsViewController {
                                           for: .touchUpInside)
         
     }
-
+    
     @objc func selectedDevice(_ notification: Notification) {
         guard let notificationData = notification.userInfo as? [String: HpsC2xDevice] else { return }
         if let device = notificationData["selectedDevice"] {
             self.device = device
         }
     }
-
+    
     @objc func creditSaleButtonAction(_: UIButton) {
         guard let amountText = amountTextField.text, amountText.count > 0 else { showTextDialog(LoadingStatus.AMOUNT_SHOULD_BE_LARGER_THAN_ZERO.rawValue)
             return
@@ -161,6 +164,8 @@ private extension C2XTransactionsViewController {
             builder.amount = amountNumber
             builder.allowPartialAuth = NSNumber(value: allowPartialAuthToggle.isOn)
             builder.cpcReq = true
+            builder.isSurchargeEnabled = false
+            builder.allowDuplicates = true
             
             let autoSubstantiation = getHealthCareComponent()
             builder.autoSubstantiation = autoSubstantiation
@@ -171,38 +176,50 @@ private extension C2XTransactionsViewController {
             if let cTransactionId = builder.clientTransactionId {
                 NSLog("Client Transaction Id Generated In The Client - Request  %@", cTransactionId)
             }
+            self.builder = builder
             builder.execute()
         } else {
             showTextDialog(LoadingStatus.DEVICE_NOT_CONNECTED_ALERT.rawValue)
         }
     }
-
+    
     @objc func manualTransactionButtonAction(_: UIButton) {
         if let device = device {
             showProgress(true)
             setText(LoadingStatus.WAIT.rawValue)
-
+            
+            let address = HpsAddress()
+            address.address = "6860 Dallas Pkwy"
+            address.zip = "75024"
+            
             let card = HpsCreditCard()
             card.cardNumber = "374245001751006"
             card.expMonth = 12
             card.expYear = 2024
             card.cvv = "201"
-
+            
             let amountString = NSDecimalNumber(string: amountTextField.text)
             let builder = HpsC2xCreditAuthBuilder(device: device)
             builder.amount = amountString
             builder.creditCard = card
+            builder.address = address
+            
+            builder.allowPartialAuth = true
+            builder.allowDuplicates = true
+            builder.isSurchargeEnabled = false
+            
+            self.builder = builder
             builder.execute()
         } else {
             showTextDialog(LoadingStatus.DEVICE_NOT_CONNECTED_ALERT.rawValue)
         }
     }
-
+    
     @objc func creditVoidTransactionButtonAction(_: UIButton) {
         if let device = device {
             showProgress(true)
             setText(LoadingStatus.WAIT.rawValue)
-
+            
             if let transactionId = transactionIdTextField.text {
                 let builder = HpsC2xCreditVoidBuilder(device: device)
                 builder.transactionId = transactionId
@@ -214,7 +231,7 @@ private extension C2XTransactionsViewController {
             showTextDialog(LoadingStatus.DEVICE_NOT_CONNECTED_ALERT.rawValue)
         }
     }
-
+    
     @objc func handleContainerViewTap() {
         view.endEditing(true)
     }
@@ -241,7 +258,7 @@ private extension C2XTransactionsViewController {
             showTextDialog(LoadingStatus.DEVICE_NOT_CONNECTED_ALERT.rawValue)
         }
     }
-
+    
     @objc func authTransactionAction(_ sender: UIButton) {
         guard let amountText = self.amountTextField.text, amountText.count > 0 else { showTextDialog(LoadingStatus.AMOUNT_SHOULD_BE_LARGER_THAN_ZERO.rawValue)
             return
@@ -265,6 +282,7 @@ private extension C2XTransactionsViewController {
             let gratuity = gratuityTextField.text ?? "0.00"
             builder.gratuity = NSDecimalNumber(string: gratuity)
             builder.creditCard = card
+            builder.isSurchargeEnabled = false
             if let cTransactionId = builder.clientTransactionId {
                 NSLog("Client Transaction Id Generated In The Client - Request  %@", cTransactionId)
             }
@@ -305,7 +323,7 @@ private extension C2XTransactionsViewController {
         if let device = self.device {
             showProgress(true)
             setText(LoadingStatus.WAIT.rawValue)
-        
+            
             self.mainTransaction = .capture
             let amountNumber = NSDecimalNumber(string: amountText)
             let builder: HpsC2xCreditCaptureBuilder = HpsC2xCreditCaptureBuilder(device: device)
@@ -415,32 +433,34 @@ extension C2XTransactionsViewController: HpsC2xDeviceDelegate, GMSTransactionDel
             statusText = LoadingStatus.DECLINED.rawValue
         case .transactionTerminated:
             statusText = LoadingStatus.TERMINATED.rawValue
+        case .surchargeRequested:
+            statusText = "Surcharge Requested"
         default:
             statusText = LoadingStatus.PROCESSING.rawValue
         }
-
+        
         let isProcessing = statusText.contains(LoadingStatus.PROCESSING.rawValue)
         enableButtons(!isProcessing)
         setText(statusText)
     }
-
+    
     func onConfirmAmount(_ amount: Decimal) {
         device?.confirmAmount(amount)
     }
-
+    
     func onConfirmApplication(_ applications: [AID]) {
         device?.confirmApplication(applications[0])
     }
-
+    
     func onTransactionComplete(_ response: HpsTerminalResponse) {
         if let responseAmount = response.approvedAmount {
             transactionAmount = responseAmount
         }
-
+        
         if let responseStatus = response.status {
             print(" Status response: \(responseStatus)")
         }
-
+        
         if let responseTransactionId = response.transactionId {
             
             self.terminalRefNumber = response.terminalRefNumber
@@ -450,86 +470,120 @@ extension C2XTransactionsViewController: HpsC2xDeviceDelegate, GMSTransactionDel
                 self.transactionId = responseTransactionId
             }
         }
-
+        
         if let cTransactionId = response.clientTransactionId {
             NSLog("Client Transaction Id Generated In The Client - Response %@", cTransactionId)
         }
-
+        
         if let deviceResponseCode = response.deviceResponseCode {
             switch deviceResponseCode {
             case LoadingStatus.APPROVAL.rawValue:
+                showDialog(for: .APPROVED(response: response))
+            case LoadingStatus.PARTIAL_APPROVAL.rawValue:
                 showDialog(for: .APPROVED(response: response))
             case LoadingStatus.DECLINED.rawValue:
                 showDialog(for: .DECLINED(response: response))
             case LoadingStatus.CANCELLED.rawValue:
                 showDialog(for: .CANCELLED(response: response))
             default:
-                if let message = response.deviceResponseMessage {
+                if let message = response.responseText {
                     showDialog(for: .MESSAGE(message: message))
                 } else {
                     showDialog(for: .MESSAGE(message: "We have faced an issue on trying to perform the transaction"))
                 }
             }
         }
-
+        
         showProgress(false)
     }
-
+    
+    func onTransactionWaitingForSurchargeConfirmation(result: HpsTransactionStatus, response: HpsTerminalResponse) {
+        if result == .surchargeRequested, let builder = self.builder,
+           let surchargeFee = response.surchargeFee {
+            let alertController = UIAlertController(title: "Surcharge Confirmation Required",
+                                                    message: "There will be a \(surchargeFee) surcharge added to your purchase",
+                                                    preferredStyle: .alert)
+            
+            // Create the actions
+            let okAction = UIAlertAction(title: "Accept", style: UIAlertAction.Style.default) {
+                UIAlertAction in
+                NSLog("OK Pressed")
+                self.device?.confirmSurcharge(builder)
+            }
+            let cancelAction = UIAlertAction(title: "Decline", style: UIAlertAction.Style.cancel) {
+                UIAlertAction in
+                NSLog("Cancel Pressed")
+                self.device?.cancelTransaction()
+                self.showProgress(false)
+            }
+            
+            // Add the actions
+            alertController.addAction(okAction)
+            alertController.addAction(cancelAction)
+            
+            // Present the controller
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
     func onTransactionCancelled() {
         showProgress(false)
     }
-
-    func onTransactionError(_: NSError) {
+    
+    func onTransactionError(_ error: NSError) {
+//        device?.cancelTransaction()
         showProgress(false)
+        print(error)
+        showDialog(for: .MESSAGE(message: "We have faced an issue on trying to perform the transaction"))
     }
-
+    
     func onError(_ error: NSError) {
         device?.onError(error)
     }
-
+    
     func searchComplete() {
         print(" searchComplete ")
     }
-
+    
     func deviceConnected() {
         print(" deviceConnected ")
     }
-
+    
     func deviceDisconnected() {
         print(" deviceDisconnected ")
     }
-
+    
     func deviceFound(_: NSObject) {
         print(" deviceFound ")
     }
-
+    
     func onStatus(_ status: HpsTransactionStatus) {
         let statusText = "\(status.rawValue)".uppercased()
         setText(statusText)
         device?.onStatus(status)
     }
-
+    
     func requestAIDSelection(_: [AID]) {
         print(" requestAIDSelection ")
     }
-
+    
     func requestAmountConfirmation(_: Decimal) {
         print(" requestAmountConfirmation ")
     }
-
+    
     func requestPostalCode(_: String, expiryDate _: String, cardholderName _: String) {
         print(" requestPostalCode ")
     }
-
+    
     func requestSaFApproval() {
         print(" requestSaFApproval ")
     }
-
+    
     func onTransactionComplete(_ result: String, response: HpsTerminalResponse) {
         device?.onTransactionComplete(result, response: response)
         showProgress(false)
     }
-
+    
     func onConnected() {
         setStatus(LoadingStatus.CONNECTED_DEVICE.rawValue)
         device?.transactionDelegate = self
@@ -537,19 +591,19 @@ extension C2XTransactionsViewController: HpsC2xDeviceDelegate, GMSTransactionDel
         enableButtons(isDeviceConnected)
         showProgress(false)
     }
-
+    
     func onDisconnected() {
         setStatus(LoadingStatus.DEVICE_NOT_CONNECTED.rawValue)
         isDeviceConnected = false
         enableButtons(isDeviceConnected)
     }
-
+    
     func onBluetoothDeviceList(_ peripherals: NSMutableArray) {
         if peripherals.count == 0 {
             return
         }
         devicesFound = NSMutableArray()
-
+        
         for (index, _) in peripherals.enumerated() {
             if let tInfo = peripherals[index] as? HpsTerminalInfo {
                 deviceList = tInfo
@@ -558,7 +612,7 @@ extension C2XTransactionsViewController: HpsC2xDeviceDelegate, GMSTransactionDel
             }
         }
     }
-
+    
     private func enableButtons(_ shouldEnable: Bool) {
         DispatchQueue.main.async {
             self.creditSaleButton.isEnabled = shouldEnable
@@ -578,7 +632,7 @@ private extension C2XTransactionsViewController {
             self.setStatus(text)
         }
     }
-
+    
     func showProgress(_ show: Bool) {
         DialogView.isHidden = !show
         if show {
@@ -587,13 +641,13 @@ private extension C2XTransactionsViewController {
             dialogSpinner.stopAnimating()
         }
     }
-
+    
     func setStatus(_ text: String) {
         DispatchQueue.main.async {
             self.labelStatus.text = text
         }
     }
-
+    
     private func showDialog(for status: Status) {
         var messageResult = ""
         var isApproved = false
@@ -620,7 +674,9 @@ private extension C2XTransactionsViewController {
             if let respText = response.responseText {
                 GWMSG = respText
             }
-            messageResult = "Response: \nStatus: \(responseCode)\n Amount: \(response.approvedAmount!)\n Issuer Resp.: \(issuerCode)\n Issuer Auth Data: \(issuerMSG)\nGW Code: \(GWCode)\nGW MSG: \(GWMSG)"
+            let surchargeFee = (Decimal(string: response.surchargeFee ?? "0") ?? 0) * 100
+            let surchargeAmount = NSDecimalNumber(string: response.surchargeAmount ?? "0")
+            messageResult = "Response: \nStatus: \(responseCode)\n Amount: \(String(format: "%.2f", response.approvedAmount.doubleValue))\nSurchargeAmount: \(String(format: "%.2f", surchargeAmount.doubleValue))\nSurchargeFee: \(surchargeFee)%\n Issuer Resp.: \(issuerCode)\n Issuer Auth Data: \(issuerMSG)\nGW Code: \(GWCode)\nGW MSG: \(GWMSG)"
             isApproved = true
         case let .CANCELLED(response):
             guard let deviceResponseMessage = response.deviceResponseMessage else { return }
@@ -663,7 +719,7 @@ private extension C2XTransactionsViewController {
                 GWMSG = respText
             }
             
-            messageResult = "Response: \nStatus: \(deviceResponseMessage)\n Amount: \(response.approvedAmount!)\n Auth Resp.: \(issuerCode)\n Issuer Auth Data: \(issuerMSG)\nGW Code: \(GWCode)\nGW MSG: \(GWMSG)"
+            messageResult = "Response: \nStatus: \(deviceResponseMessage)\n Amount: \(response.approvedAmount)\n Auth Resp.: \(issuerCode)\n Issuer Auth Data: \(issuerMSG)\nGW Code: \(GWCode)\nGW MSG: \(GWMSG)"
             isApproved = false
         case let .MESSAGE(message):
             messageResult = message
@@ -691,6 +747,7 @@ public enum LoadingStatus: String {
     case COMPLETED
     case ERROR
     case TERMINATED
+    case PARTIAL_APPROVAL = "PARTIAL APPROVAL"
     case APPROVAL
     case DEVICE_NOT_CONNECTED_ALERT = "You must have a connected device to proceed."
     case NOT_TRANSACTION_ID = "You Must have a valid Transaction ID for this action."

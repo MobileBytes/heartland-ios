@@ -117,6 +117,28 @@ public class GMSWrapper: NSObject {
     public func confirmAmount(amount: Decimal) {
         GMSManager.shared.confirm(amount: amount)
     }
+    
+    public func confirmSurcharge(_ builder: GMSBaseBuilder, withTransactionType transactionType: HpsTransactionType) {
+        self.transactionType = transactionType
+        self.builder = builder
+        switch transactionType {
+        case .creditAuth:
+            if let transaction = builder.buildRequest() as? AuthTransaction {
+                GMSManager.shared.confirmSurcharge(transaction: transaction, delegate: self)
+            }
+        case .creditCapture:
+            if let transaction = builder.buildRequest() as? CaptureTransaction {
+                GMSManager.shared.confirmSurcharge(transaction: transaction, delegate: self)
+            }
+        case .creditSale:
+            if let transaction = builder.buildRequest() as? SaleTransaction {
+                GMSManager.shared.confirmSurcharge(transaction: transaction, delegate: self)
+            }
+        default:
+            break
+        }
+        
+    }
 
     public func selectAID(aid: AID) {
         GMSManager.shared.select(aid: aid)
@@ -166,9 +188,11 @@ extension GMSWrapper: ConnectionDelegate {
 }
 
 extension GMSWrapper: TransactionDelegate {
+   
     // MARK: TransactionDelegate
 
     public func onState(state: TransactionState) {
+        print(" GMSWrapper - onState ")
         currentState = state
         delegate.onStatus(HpsTransactionStatus.fromTransactionState(state))
     }
@@ -206,6 +230,14 @@ extension GMSWrapper: TransactionDelegate {
         if result == .success && currentState == .reversalInProgress {
             data.deviceResponseCode = "reversed"
         }
+        
+        if response?.surchargeFee != nil {
+            data.surchargeFee = response?.surchargeFee
+        }
+        
+        if response?.surchargeAmount != nil {
+            data.surchargeAmount = response?.surchargeAmount
+        }
 
         delegate.onTransactionComplete(result.rawValue, response: data)
     }
@@ -221,6 +253,21 @@ extension GMSWrapper: TransactionDelegate {
             delegate.onError(.init(fromTransactionError: error))
         }
     }
+    
+    public func onTransactionWaitingForSurchargeConfirmation(result: TransactionResult,
+                                                             response: TransactionResponse?) {
+        let data = HpsTerminalResponse()
+        data.deviceResponseCode = result.rawValue
+        let responseMap = HpsTerminalResponse()
+        responseMap.responseCode = response?.gatewayResponseCode
+        responseMap.responseText = response?.gatewayResponseText
+        responseMap.surchargeFee = response?.surchargeFee
+        responseMap.surchargeAmount = response?.surchargeAmount
+        
+        delegate.onTransactionWaitingForSurchargeConfirmation(result: .surchargeRequested,
+                                                              response: responseMap)
+    }
+    
 }
 
 /*
