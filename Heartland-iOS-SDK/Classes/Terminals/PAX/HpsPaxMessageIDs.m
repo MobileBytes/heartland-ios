@@ -66,6 +66,7 @@ NSString *const A07_RSP_SHOW_DIALOG = @"A07";
 NSString *const A09_RSP_GET_SIGNATURE = @"A09";
 NSString *const A11_RSP_SHOW_MESSAGE = @"A11";
 NSString *const A13_RSP_CLEAR_MESSAGE = @"A13";
+NSString *const A15_RSP_CANCEL = @"A15";
 NSString *const A17_RSP_RESET = @"A17";
 NSString *const A19_RSP_UPDATE_RESOURCE_FILE = @"A19";
 NSString *const A21_RSP_DO_SIGNATURE = @"A21";
