@@ -91,7 +91,7 @@
     }
 }
 
-- (void) executeForUPAUSA:(void(^)(HpsUpaResponse*, NSError*))responseBlock{
+- (void) executeUPAUSA:(void(^)(HpsUpaResponse*, NSError*))responseBlock{
 
     [self validate];
 
