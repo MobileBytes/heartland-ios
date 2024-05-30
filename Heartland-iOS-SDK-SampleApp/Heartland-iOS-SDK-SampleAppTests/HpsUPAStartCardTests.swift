@@ -4,16 +4,21 @@
 //
 
 import Foundation
-import XCTest
 @testable import Heartland_iOS_SDK
+import XCTest
 
 class HpsStartCardLoggerMock: NSObject, HpsInterfaceLogging {
+    func willSendData(toHpsInterface data: Data!, writeByteIndex: UInt) {
+        let description = String(data: data, encoding: .utf8) ?? ""
+        print("willSendData(toHpsInterface:) - \(description)")
+    }
+    
     func hpsInterfaceDidDisconnect() {
     }
 
     func hpsInterfaceDidReceive(_ data: Data!) {
         let description = String(data: data, encoding: .utf8) ?? ""
-        print("hpsInterfaceDidReceive - \(String(data: data, encoding: .utf8) ?? "")")
+        print("hpsInterfaceDidReceive - \(description)")
     }
 
     func hpsInterfaceDidReceiveError(_ error: Error!) {
@@ -26,16 +31,15 @@ class HpsStartCardLoggerMock: NSObject, HpsInterfaceLogging {
 }
 
 class HpsUPAStartCardTests: XCTestCase {
-    
     private func setupDevice() -> HpsUpaDevice? {
         let config = HpsConnectionConfig()
-        config.username = "701420636";
-        config.password = "$Test1234";
-        config.licenseID = "145801";
-        config.siteID = "145898";
-        config.deviceID = "90916202";
-        config.ipAddress = "192.168.4.127";
-        config.port = "8081";
+        config.username = ""
+        config.password = ""
+        config.licenseID = ""
+        config.siteID = ""
+        config.deviceID = ""
+        config.ipAddress = "192.168.4.127"
+        config.port = "8081"
         config.connectionMode = HpsConnectionModes.TCP_IP.rawValue
         config.logger = HpsStartCardLoggerMock()
         return HpsUpaDevice(config: config)
@@ -65,13 +69,13 @@ class HpsUPAStartCardTests: XCTestCase {
     
     func testStartCardExecute() {
         let expectation = XCTestExpectation(description: "Wait for execution...")
-        let device = self.setupDevice()
-        
+        let device = setupDevice()
+
         guard let device else {
             XCTFail("Device is nil")
             return
         }
-        
+
         let builder = HpsUpaStartCardTransactionBuilder(with: device)
         
         let params = HpsUpaStartCardParams(acquisitionTypes: [.swipe],
@@ -81,31 +85,39 @@ class HpsUPAStartCardTests: XCTestCase {
                                            promptForManualEntryPassword: nil,
                                            brandIcon1: nil,
                                            brandIcon2: nil)
-        
+
         let pi = HpsUpaStartCardProcessingIndicators(quickChip: "Y",
                                                      checkLuhn: nil,
                                                      securityCode: nil,
-                                                     cardFilterType: nil)
-        
+                                                     cardTypeFilter: nil)
+
         let tx = HpsUpaStartCardTransaction(totalAmount: "1.24",
                                             cashBackAmount: nil,
                                             tranDate: nil,
                                             tranTime: nil,
                                             transactionType: "Sale")
-        
-        let request = HpsUpaStartCard(data: HpsUpaStartCardData(EcrId: "123", requestId: "1234", data: HpsUpaStartCardDataDetails(
-            params: params,
-            processingIndicators: pi,
-            transaction: tx)))
-        
+
+        let data = HpsUpaCommandPayload<HpsUpaStartCardDataDetails>(
+            command: HpsUpaStartCardConstants.command,
+            ecrId: "123",
+            requestId: "1234",
+            ecrId: "123", requestId: "1234",
+            data: HpsUpaStartCardDataDetails(
+                params: params,
+                processingIndicators: pi,
+                transaction: tx
+            )
+        )
+
+        let request = HpsUpaStartCard(data: data)
+
         builder.execute(request: request) { upaResponse, error in
-            debugPrint(upaResponse)
-            debugPrint(error)
-            
+            XCTAssertNotNil(upaResponse)
+            XCTAssertNil(error)
+
             expectation.fulfill()
         }
-        
+
         wait(for: [expectation], timeout: 1000)
     }
 }
-

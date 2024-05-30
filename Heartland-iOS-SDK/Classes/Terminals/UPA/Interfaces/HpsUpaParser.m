@@ -57,6 +57,8 @@
             return @"UPA device connection closed unexpectedly";
         case MBUPAErrorTypeCommunicationInvalidMessage:
             return @"Invalid message received from UPA device";
+        case MBUPAErrorTypeConcurrentMessages:
+            return @"Another UPA communication is currently in progress";
         default:
             return @"Unknown UPA Error";
     }
@@ -77,7 +79,9 @@
         @"BUSY": @(UPA_MSG_TYPE_BUSY),
         @"TO": @(UPA_MSG_TYPE_TIMEOUT),
         @"MSG": @(UPA_MSG_TYPE_MSG),
-        @"DATA": @(UPA_MSG_TYPE_DATA), };
+        @"DATA": @(UPA_MSG_TYPE_DATA),
+//        @"BC": @(UPA_MSG_TYPE_BC),
+    };
     NSNumber *typePointer = upaMessageTypesByRaw[message];
     return typePointer ? [typePointer longValue] : UPA_MSG_TYPE_UNKNOWN;
 }

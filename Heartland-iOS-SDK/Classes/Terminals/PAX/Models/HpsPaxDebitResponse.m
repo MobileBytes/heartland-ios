@@ -13,7 +13,7 @@
 
 - (HpsBinaryDataScanner*) parseResponse{
     HpsBinaryDataScanner *reader = [super parseResponse];
-    if ([self.deviceResponseCode isEqualToString:@"000000"] || [self.deviceResponseCode isEqualToString:@"100011"]) {
+    if ([self.deviceResponseCode isEqualToString:@"000000"] || [self.deviceResponseCode isEqualToString:@"000002"] || [self.deviceResponseCode isEqualToString:@"100011"]) {
         
         self.hostResponse = [[HpsPaxHostResponse alloc] initWithBinaryReader:reader];
         self.transactionType = [reader readStringUntilDelimiter:HpsControlCodes_FS];
@@ -33,6 +33,10 @@
     @try {
         if (self.hostResponse != nil) {
             self.authorizationCode = self.hostResponse.authCode;
+            
+            if (!self.hostResponse.traceNumber.length && self.traceResponse.ecrRefNumber != nil) {
+                self.hostResponse.traceNumber = self.traceResponse.ecrRefNumber;
+            }
         }
         
         if (self.accountResponse != nil) {

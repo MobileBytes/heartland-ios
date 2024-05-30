@@ -15,7 +15,8 @@
 - (HpsBinaryDataScanner*) parseResponse{
     HpsBinaryDataScanner *reader = [super parseResponse];
     //must parse responses for duplicate error codes (100011 - Local Duplicate, 103000 Host Duplicate)
-    if ([self.deviceResponseCode isEqualToString:@"000000"] || [self.deviceResponseCode isEqualToString:@"100011"]  || [self.deviceResponseCode isEqualToString:@"103000"]) {
+    //and new  partial approval code (000002)
+    if ([self.deviceResponseCode isEqualToString:@"000000"] || [self.deviceResponseCode isEqualToString:@"100011"]  || [self.deviceResponseCode isEqualToString:@"103000"] || [self.deviceResponseCode isEqualToString:@"000002"]) {
         
         self.hostResponse = [[HpsPaxHostResponse alloc] initWithBinaryReader:reader];
         self.transactionType = [reader readStringUntilDelimiter:HpsControlCodes_FS];
@@ -40,7 +41,12 @@
     @try {
         if (self.hostResponse != nil) {
             self.authorizationCode = self.hostResponse.authCode;
+            
+            if (!self.hostResponse.traceNumber.length && self.traceResponse.ecrRefNumber != nil) {
+                self.hostResponse.traceNumber = self.traceResponse.ecrRefNumber;
+            }
         }
+        
         
     } @catch (NSException *exception) {
         NSLog(@"Error on mapResponse CREDIT RESPONSE");
