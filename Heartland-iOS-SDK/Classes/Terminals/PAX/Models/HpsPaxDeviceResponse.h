@@ -11,8 +11,6 @@
 
 @interface HpsPaxDeviceResponse : HpsPaxBaseResponse
 
-@property (nonatomic,strong) NSString *clientTransactionId;
-@property (nonatomic,strong) NSString *responseCode;
 @property (nonatomic,strong) NSString *referenceNumber;
 @property (nonatomic,strong) NSString *pinEntryStatus;
 @property (nonatomic,strong) NSString *printLine1;

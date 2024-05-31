@@ -36,7 +36,7 @@
     
     NSString *urlString = [NSString stringWithFormat:@"http://%@:%@/?%@",
                            self.config.ipAddress,
-                           self.config.port,
+                           [self getPort:message.toString],
                            [data base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed]];
     
     NSLog(@"181189=%@",urlString);
@@ -85,4 +85,12 @@
     }
 }
 
+- (NSString *)getPort:(NSString *)message {
+    if ([message containsString:@"A14"]) {
+        NSInteger portValue = [self.config.port integerValue] + 1;
+        return [NSString stringWithFormat:@"%ld", (long)portValue];
+    }
+    
+    return self.config.port;
+}
 @end

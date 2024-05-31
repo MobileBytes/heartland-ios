@@ -22,6 +22,10 @@
 			self.responseCode = self.hostResponse.hostResponseCode;
 			self.responseText = self.hostResponse.hostResponseMessage;
 			self.approvalCode = self. hostResponse.hostResponseCode;
+            
+            if (!self.hostResponse.traceNumber.length && self.traceResponse.ecrRefNumber != nil) {
+                self.hostResponse.traceNumber = self.traceResponse.ecrRefNumber;
+            }
 		}
 		if (self.amountResponse != nil){
             self.transactionAmount = [NSDecimalNumber decimalNumberWithDecimal:[[NSNumber numberWithDouble:self.amountResponse.approvedAmount] decimalValue]];
@@ -70,6 +74,7 @@
 
 
 			self.cardBin = [self.extDataResponse.collection objectForKey:PAX_EXT_DATA_CARD_BIN];
+            self.programType = [self.extDataResponse.collection objectForKey:PAX_EXT_DATA_PROGRAM_TYPE];
 			self.signatureStatus = [self.extDataResponse.collection objectForKey:PAX_EXT_DATA_SIGNATURE_STATUS];
             self.pinEntryStatus = [self.extDataResponse.collection objectForKey:PAX_EXT_DATA_PIN_ENTRY_STATUS];
             self.printLine1 = [self.extDataResponse.collection objectForKey:PAX_EXT_DATA_PRINT_LINE_1];

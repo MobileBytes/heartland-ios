@@ -70,7 +70,7 @@ static int IsFieldEnable;
         self.transactionId = [host getValueAsString:@"responseId"];
         self.transactionTime = [host getValueAsString:@"respDateTime"];
         self.gatewayRspMsg = [host getValueAsString:@"gatewayResponseMessage"];
-        self.gatewayRspCode = [host getValueAsString:@"gatewayRespCode"];
+        self.gatewayRspCode = [host getValueAsString:@"gatewayResponseCode"];
         self.responseCode = [host getValueAsString:@"responseCode"];
         self.responseText = [host getValueAsString:@"responseText"];
         self.terminalRefNumber = [host getValueAsString:@"tranNo"];
@@ -126,6 +126,7 @@ static int IsFieldEnable;
 
     if ([data has:@"payment"]) {
         JsonDoc* payment = [data get:@"payment"];
+        self.cardGroup = [payment getValueAsString:@"cardGroup"];
         self.cardType = [payment getValueAsString:@"cardType"];
         self.paymentType = [payment getValueAsString:@"paymentType"];
         self.entryMethod = [payment getValueAsString:@"cardAcquisition"];
@@ -135,6 +136,7 @@ static int IsFieldEnable;
         self.storeAndForward = [payment getValueAsString:@"storeAndForward"];
         self.invoiceNbr = [payment getValueAsString:@"invoiceNbr"];
         self.cardholderName = [payment getValueAsString:@"cardHolderName"];
+        self.signatureData = [payment getValueAsString:@"signatureData"];
     }
 
     if ([data has:@"emv"]) {
@@ -155,6 +157,23 @@ static int IsFieldEnable;
             self.applicationCryptogramType = ARQC;
             self.applicationCryptogramTypeS = [HpsTerminalEnums applicationCryptogramTypeToString:self.applicationCryptogramType];
         }
+        
+        NSString *emvTSI = [emv getValueAsString:@"9B"];
+        self.emvTSI = emvTSI;
+        
+        NSString *emvTVR = [emv getValueAsString:@"95"];
+        self.emvTVR = emvTVR;
+    }
+    
+    if ([data has:@"duplicate"]) {
+        JsonDoc* duplicate = [data get:@"duplicate"];
+        self.duplicate = [[HpsTransactionDuplicate alloc] init];
+        self.duplicate.duplicateCardType = [duplicate getValueAsString:@"cardType"];
+        self.duplicate.duplicateTotalAmount = [duplicate getValueAsString:@"totalAmount"];
+        self.duplicate.duplicateApprovalCode = [duplicate getValueAsString:@"approvalCode"];
+        self.duplicate.duplicateReferenceNumber = [duplicate getValueAsString:@"referenceNumber"];
+        self.duplicate.duplicateTranDate = [duplicate getValueAsString:@"tranDate"];
+        self.duplicate.duplicatePanLast4 = [duplicate getValueAsString:@"panLast4"];
     }
 
     return self;
@@ -199,14 +218,6 @@ static int IsFieldEnable;
     return [self.status isEqualToString:@"Success"];
 }
 
-/// combines device response code & message
-- (NSString *)responseDescription {
-    NSMutableArray *parts = [NSMutableArray new];
-    if (self.deviceResponseCode) [parts addObject:self.deviceResponseCode];
-    if (self.deviceResponseMessage) [parts addObject:self.deviceResponseMessage];
-    return ![parts count] ? nil : [parts componentsJoinedByString:@" - "];
-}
-
 // MARK: Error
 
 /// message should be in the format:
@@ -247,9 +258,19 @@ static int IsFieldEnable;
     if ([self isSuccess]) { return nil; }
     NSString *domain = @"com.mobilebytes.upa";
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
-    [userInfo setValue:[self responseDescription] forKey:NSLocalizedDescriptionKey];
-    [userInfo setValue:self.gatewayRspMsg forKey:NSLocalizedFailureReasonErrorKey];
+    [userInfo setValue:[self responseErrorDescription] forKey:NSLocalizedDescriptionKey];
     return [NSError errorWithDomain:domain code:1 userInfo:userInfo];
+}
+
+- (NSString *_Nullable)responseErrorDescription {
+    if ([self isSuccess]) { return nil; }
+    NSArray *(^details)(id, id) = ^(id code, id message){
+        return code && message ? @[code, message] : nil;
+    };
+    NSArray *parts = (details(self.responseCode, self.responseText) // Issuer Info
+                      ?: details(self.gatewayRspCode, self.gatewayRspMsg) // Gateway Info
+                      ?: details(self.deviceResponseCode, self.deviceResponseMessage)); // Device Info
+    return [parts componentsJoinedByString:@" - "];
 }
 
 @end

@@ -23,6 +23,8 @@
 @property (nonatomic, strong) NSString *sdkNameVersion;
 @property (nonatomic) BOOL isProduction;
 
+@property (nonatomic) BOOL shouldFailConcurrentMessaging;
+@property (nonatomic) BOOL shouldLogSends;
 @property (nonatomic, strong) id<HpsInterfaceLogging> logger;
 
 @end
