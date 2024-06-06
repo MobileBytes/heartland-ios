@@ -24,7 +24,7 @@
 
 - (void) mapResponse:(id <HpaResposeInterface>) response{
 	[super mapResponse:response];
-	self.receivedResponse = response;
+	self.recievedResponse = response;
 	self.response = response.Response;
 
 	self.ecrId = response.ECRId;
@@ -32,46 +32,38 @@
 	self.version = response.Version;
 	self.status = response.MultipleMessage;
 
-	if (self.receivedResponse.ResponseText)
+	if (self.recievedResponse.ResponseText)
 		{
-		self.deviceResponseMessage = self.receivedResponse.ResponseText;
+		self.deviceResponseMessage = self.recievedResponse.ResponseText;
 
 		}
 	else{
-		self.deviceResponseMessage = self.receivedResponse.ResultText;
+		self.deviceResponseMessage = self.recievedResponse.ResultText;
 
 	}
-	if (self.receivedResponse.ResponseCode)
+	if (self.recievedResponse.ResponseCode)
 		{
-		self.deviceResponseCode = [self NormalizeResponse:self.receivedResponse.ResponseCode];
+		self.deviceResponseCode = [self NormalizeResponse:self.recievedResponse.ResponseCode];
 		}
 	else
 		{
-		self.deviceResponseCode = [self NormalizeResponse:self.receivedResponse.Result] ;
+		self.deviceResponseCode = [self NormalizeResponse:self.recievedResponse.Result] ;
 		}
     
-    if (self.receivedResponse.GatewayRspCode) {
-        self.issuerRspCode = [self NormalizeResponse:self.receivedResponse.GatewayRspCode];
+    if (self.recievedResponse.GatewayRspCode) {
+        self.issuerRspCode = [self NormalizeResponse:self.recievedResponse.GatewayRspCode];
     }
     
-    if (self.receivedResponse.GatewayRspMsg) {
-        self.issuerRspMsg = [self NormalizeResponse:self.receivedResponse.GatewayRspMsg];
+    if (self.recievedResponse.GatewayRspMsg) {
+        self.issuerRspMsg = [self NormalizeResponse:self.recievedResponse.GatewayRspMsg];
     }
     
-    if (self.receivedResponse.AuthCode) {
-        self.authCode = [self NormalizeResponse:self.receivedResponse.AuthCode];
+    if (self.recievedResponse.AuthCode) {
+        self.authCode = [self NormalizeResponse:self.recievedResponse.AuthCode];
     }
     
-    if (self.receivedResponse.AuthCodeData) {
-        self.authCodeData = [self NormalizeResponse:self.receivedResponse.AuthCodeData];
-    }
-    
-    if (self.receivedResponse.SurchargeAmount) {
-        self.surchargeAmount = [self NormalizeResponse:self.receivedResponse.SurchargeAmount];
-    }
-    
-    if (self.receivedResponse.SurchargeFee) {
-        self.surchargeFee = [self NormalizeResponse:self.receivedResponse.SurchargeFee];
+    if (self.recievedResponse.AuthCodeData) {
+        self.authCodeData = [self NormalizeResponse:self.recievedResponse.AuthCodeData];
     }
 }
 

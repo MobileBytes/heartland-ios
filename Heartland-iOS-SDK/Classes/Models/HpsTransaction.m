@@ -23,11 +23,9 @@
     NSString *amount = [NSString stringWithFormat:@"<hps:Amt>%f</hps:Amt>", self.chargeAmount];
     NSString *allowDuplicate = [NSString stringWithFormat:@"<hps:AllowDup>%@</hps:AllowDup>", self.allowDuplicate ? @"Y" : @"N"];
     NSString *allowPartialAuth = [NSString stringWithFormat:@"<hps:AllowPartialAuth>%@</hps:AllowPartialAuth>", self.allowPartialAuth ? @"Y" : @"N" ];
-    NSString *cpcReq = [NSString stringWithFormat:@"<hps:CPCReq>%@</hps:CPCReq>", self.cpcReq ? @"Y" : @"N" ];
     
     NSString *xml = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@",requestXMLhead, [self.cardData toXML],[self.cardHolderData toXML],
-                     [self.additionalTxnFields toXML], amount, allowDuplicate,
-                     allowPartialAuth, cpcReq, requestXMLTail];
+                     [self.additionalTxnFields toXML], amount, allowDuplicate, allowPartialAuth, requestXMLTail];
     return xml;
 }
 

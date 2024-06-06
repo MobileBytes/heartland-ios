@@ -190,9 +190,6 @@
 #import "HpsCardEntryViewController.h"
 #import "HpsCardInfoViewController.h"
 #import "XMLDictionary.h"
-#import "HpsAutoSubstantiation.h"
-#import "HpsUpaDeviceSignatureResponse.h"
-#import "HpsUpaDeletePreAuthBuilder.h"
 
 FOUNDATION_EXPORT double Heartland_iOS_SDKVersionNumber;
 FOUNDATION_EXPORT const unsigned char Heartland_iOS_SDKVersionString[];

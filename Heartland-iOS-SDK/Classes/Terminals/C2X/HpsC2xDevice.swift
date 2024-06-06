@@ -2,7 +2,7 @@ import Foundation
 import GlobalMobileSDK
 
 @objcMembers
-public class HpsC2xDevice: GMSDevice, IC2xDeviceInterface {
+public class HpsC2xDevice : GMSDevice, IC2xDeviceInterface {
     public init(config: HpsConnectionConfig) {
         super.init(
             config: config,
@@ -11,8 +11,7 @@ public class HpsC2xDevice: GMSDevice, IC2xDeviceInterface {
                 .chipFallback,
                 .contactless,
                 .msr,
-                .manual,
-                .quickChip,
+                .manual
             ],
             terminalType: .bbpos_c2x
         )

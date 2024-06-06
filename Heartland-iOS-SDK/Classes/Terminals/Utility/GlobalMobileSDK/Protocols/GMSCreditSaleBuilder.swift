@@ -11,9 +11,4 @@ public protocol GMSCreditSaleBuilder {
     var creditCard: HpsCreditCard? { get set }
     var address: HpsAddress? { get set }
     var clientTransactionId: String? { get set }
-    var allowPartialAuth: NSNumber? { get set }
-    var cpcReq: NSNumber? { get set }
-    var autoSubstantiation: HpsAutoSubstantiation? { get set }
-    var isSurchargeEnabled: NSNumber? { get set }
-    var allowDuplicates: NSNumber? { get set }
 }

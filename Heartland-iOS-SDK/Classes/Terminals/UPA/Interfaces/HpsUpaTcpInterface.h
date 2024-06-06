@@ -11,4 +11,5 @@ typedef void (^HpsUPAHandler)(JsonDoc *, NSError *);
 - (instancetype)initWithConfig:(HpsConnectionConfig *)config;
 
 - (void)send:(id<IHPSDeviceMessage>)message andUPAResponseBlock:(HpsUPAHandler)responseBlock;
+
 @end

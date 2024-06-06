@@ -25,19 +25,12 @@
 
 @implementation HpsUpaTcpInterface
 
-static BOOL _isMessaging;
-
 - (instancetype)initWithConfig:(HpsConnectionConfig *)config {
-    HpsTcpInterface *interface = [[HpsTcpInterface alloc] init];
-    interface.config = config;
-    return [self initWithInterface:interface];
-}
-
-- (instancetype)initWithInterface:(HpsTcpInterface *)interface {
     self = [super init];
     if (self) {
         _events = [NSMutableArray array];
-        _interface = interface;
+        _interface = [[HpsTcpInterface alloc] init];
+        _interface.config = config;
         _interface.delegate = self;
     }
     return self;
@@ -64,11 +57,6 @@ static BOOL _isMessaging;
 }
 
 - (void)send:(id<IHPSDeviceMessage>)message andUPAResponseBlock:(HpsUPAHandler)responseBlock {
-    if (_isMessaging && _interface.config.shouldFailConcurrentMessaging) {
-        responseBlock(nil, [self errorFromType:MBUPAErrorTypeConcurrentMessages]);
-        return;
-    }
-    _isMessaging = YES;
     [self addEventsWithMessage:message];
     [self setHandler:responseBlock];
     NSData *data = [message getSendBuffer];
@@ -78,7 +66,6 @@ static BOOL _isMessaging;
 // MARK: - HpsTcpInterfaceDelegate
 
 - (void)tcpInterfaceDidCloseStreams {
-    _isMessaging = NO;
     [_events removeAllObjects];
     BOOL closedEarly = _handlerJSONString == nil && _handlerError == nil;
     if (closedEarly) [self errorOccurred:MBUPAErrorTypeConnectionUnexpectedClose];
@@ -143,15 +130,12 @@ static BOOL _isMessaging;
 }
 
 - (void)errorOccurred:(MBUPAErrorType)errorType {
-    [self setHandlerError:[self errorFromType:errorType]];
-}
-
-- (NSError *)errorFromType:(MBUPAErrorType)errorType {
     NSString *domain = HpsCommon.sharedInstance.hpsErrorDomain;
     NSString *description = [HpsUpaParser descriptionOfMBUPAErrorType:errorType];
     description = [NSString stringWithFormat:@"UPA response error - %@", description];
     NSDictionary *userInfo = @{NSLocalizedDescriptionKey: description};
-    return [NSError errorWithDomain:domain code:errorType userInfo:userInfo];
+    NSError *error = [NSError errorWithDomain:domain code:errorType userInfo:userInfo];
+    [self setHandlerError:error];
 }
 
 - (void)executeNextMessage {
@@ -193,4 +177,5 @@ static BOOL _isMessaging;
     NSString *jsonString = [HpsUpaParser jsonStringFromUPARaw:data];
     [self setHandlerJSONString:jsonString];
 }
+
 @end

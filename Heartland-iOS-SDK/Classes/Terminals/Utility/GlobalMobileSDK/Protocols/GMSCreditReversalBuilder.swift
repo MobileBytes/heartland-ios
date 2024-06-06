@@ -7,5 +7,4 @@ public protocol GMSCreditReversalBuilder {
     var reason: ReversalReasonCode { get set }
     var referenceNumber: String? { get set }
     var transactionId: String? { get set }
-    var allowPartialAuth: NSNumber? { get set }
 }

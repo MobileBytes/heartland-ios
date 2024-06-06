@@ -7,7 +7,7 @@
 @property (nonatomic,strong) NSString *response;
 @property (nonatomic,strong) NSString *ecrId;
 @property (nonatomic,strong) NSString *hpaId;
-@property id <HpaResposeInterface> receivedResponse;
+@property id <HpaResposeInterface> recievedResponse;
 
 -(id)initWithHpaBaseResponse:(NSData *)data withParameters:(NSArray *)messageIds;
 - (void) mapResponse:(id <HpaResposeInterface>) response;

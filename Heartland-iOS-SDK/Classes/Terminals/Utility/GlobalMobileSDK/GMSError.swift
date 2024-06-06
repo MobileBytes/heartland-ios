@@ -11,7 +11,7 @@ public enum GMSErrorType: Int {
 extension NSError {
     convenience init(fromConnectionError error: GlobalMobileSDK.ConnectionError) {
         var reason = "unknown"
-        switch error {
+        switch (error) {
         case .bluetoothNotSupported:
             reason = "bluetoothNotSupported"
         case .bluetoothPermissionNotGranted:
@@ -34,10 +34,9 @@ extension NSError {
 
         self.init(domain: "com.heartlandpaymentsystems.iossdk", code: GMSErrorType.connectionError.rawValue, userInfo: ["reason": reason])
     }
-
     convenience init(fromSearchError error: GlobalMobileSDK.SearchError) {
         var reason = "unknown"
-        switch error {
+        switch (error) {
         case .bluetoothNotSupported:
             reason = "bluetoothNotSupported"
         case .bluetoothPermissionNotGranted:
@@ -52,13 +51,12 @@ extension NSError {
 
         self.init(domain: "com.heartlandpaymentsystems.iossdk", code: GMSErrorType.searchError.rawValue, userInfo: ["reason": reason])
     }
-
     convenience init(fromTransactionError error: GlobalMobileSDK.TransactionError) {
         var reason = "unknown"
         var message: String?
         var errorCode: Int?
         var transactionId: String?
-        switch error {
+        switch (error) {
         case .gatewayNotConfigured:
             reason = "gatewayNotConfigured"
         case .terminalNotConfigured:
@@ -83,24 +81,24 @@ extension NSError {
             reason = "transactionNotSupported"
         case .transactionInProgress:
             reason = "transactionInProgress"
-        case let .transactionFailed(msg):
+        case .transactionFailed(let msg):
             reason = "transactionFailed"
             message = msg
-        case let .safTransactionFailed(msg, txnId):
+        case .safTransactionFailed(let msg, let txnId):
             reason = "safTransactionFailed"
             message = msg
             transactionId = txnId
-        case let .terminalFailed(msg, errCode):
+        case .terminalFailed(let msg, let errCode):
             reason = "terminalFailed"
             message = msg
             errorCode = errCode
-        case let .missingRequiredValue(msg):
+        case .missingRequiredValue(let msg):
             reason = "missingRequiredValue"
             message = msg
-        case let .gatewayPermissionFailed(msg):
+        case .gatewayPermissionFailed(let msg):
             reason = "gatewayPermissionFailed"
             message = msg
-        case let .gatewayFailure(msg, errCode):
+        case .gatewayFailure(let msg, let errCode):
             reason = "gatewayFailure"
             message = msg
             errorCode = errCode
@@ -118,7 +116,7 @@ extension NSError {
             "reason": reason,
             "message": message ?? "",
             "errorCode": String(errorCode ?? -1),
-            "transactionId": transactionId ?? "",
+            "transactionId": transactionId ?? ""
         ])
     }
 }

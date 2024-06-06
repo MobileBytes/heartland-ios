@@ -8,26 +8,26 @@ public class HpsTerminalInfo: NSObject {
     public var descriptionText: String = ""
     public var connected: Bool = false
     public var terminalType: String = ""
-    public var identifier: UUID = .init()
-
+    public var identifier: UUID = UUID()
+    
     required init(name: String, description: String, connected: Bool, terminalType: String, identifier: UUID) {
-        let type = TerminalType(rawValue: terminalType) ?? .none
-        gmsTerminalInfo = GMSTerminalInfo(name: name, description: description, connected: connected, terminalType: type, identifier: identifier)
+        let type: TerminalType = TerminalType(rawValue: terminalType) ?? .none
+        self.gmsTerminalInfo = GMSTerminalInfo(name: name, description: description, connected: connected, terminalType: type, identifier: identifier)
         super.init()
-        setProperties(gmsTerminalInfo)
+        self.setProperties(self.gmsTerminalInfo)
     }
-
+    
     init(fromTerminalInfo terminalInfo: TerminalInfo) {
-        gmsTerminalInfo = terminalInfo as! GMSTerminalInfo
+        self.gmsTerminalInfo = terminalInfo as! GMSTerminalInfo
         super.init()
-        setProperties(gmsTerminalInfo)
+        self.setProperties(self.gmsTerminalInfo)
     }
-
+    
     private func setProperties(_ terminalInfo: GMSTerminalInfo) {
-        name = terminalInfo.name
-        descriptionText = terminalInfo.description
-        connected = terminalInfo.connected
-        terminalType = terminalInfo.terminalType.rawValue
-        identifier = terminalInfo.identifier
+        self.name = terminalInfo.name
+        self.descriptionText = terminalInfo.description
+        self.connected = terminalInfo.connected
+        self.terminalType = terminalInfo.terminalType.rawValue
+        self.identifier = terminalInfo.identifier
     }
 }

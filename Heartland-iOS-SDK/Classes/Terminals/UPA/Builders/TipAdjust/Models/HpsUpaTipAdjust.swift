@@ -6,7 +6,6 @@
 import Foundation
 
 // MARK: - HpsUpaTipAdjust
-
 public struct HpsUpaTipAdjust: Codable {
     public let message: String?
     public let data: HpsUpaTipAdjustData?
@@ -18,7 +17,6 @@ public struct HpsUpaTipAdjust: Codable {
 }
 
 // MARK: - HpsUpaTipAdjustData
-
 public struct HpsUpaTipAdjustData: Codable {
     public let command, EcrId, requestId: String?
     public let data: HpsUpaTipAdjustItem?
@@ -32,7 +30,6 @@ public struct HpsUpaTipAdjustData: Codable {
 }
 
 // MARK: - HpsUpaTipAdjustItem
-
 public struct HpsUpaTipAdjustItem: Codable {
     public let params: HpsUpaTipAdjustParams?
     public let transaction: HpsUpaTipAdjustTransaction?
@@ -44,15 +41,13 @@ public struct HpsUpaTipAdjustItem: Codable {
 }
 
 // MARK: - HpsUpaTipAdjustParams
-
 public struct HpsUpaTipAdjustParams: Codable {
     public let clerkId: String?
     public let directMktInvoiceNbr: String?
     public let directMktShipMonth: String?
     public let directMktShipDay: String?
 
-    public init(clerkId: String?, directMktInvoiceNbr: String?,
-                directMktShipMonth: String?, directMktShipDay: String?) {
+    public init(clerkId: String?, directMktInvoiceNbr: String?, directMktShipMonth: String?, directMktShipDay: String?) {
         self.clerkId = clerkId
         self.directMktInvoiceNbr = directMktInvoiceNbr
         self.directMktShipMonth = directMktShipMonth
@@ -61,15 +56,12 @@ public struct HpsUpaTipAdjustParams: Codable {
 }
 
 // MARK: - HpsUpaTipAdjustTransaction
-
 public struct HpsUpaTipAdjustTransaction: Codable {
-    public let tipAmount, tranNo, invoiceNbr, referenceNumber: String?
+    public let tipAmount, tranNo, invoiceNbr: String?
 
-    public init(tipAmount: String?, tranNo: String?,
-                invoiceNbr: String?, referenceNumber: String?) {
+    public init(tipAmount: String?, tranNo: String?, invoiceNbr: String?) {
         self.tipAmount = tipAmount
         self.tranNo = tranNo
         self.invoiceNbr = invoiceNbr
-        self.referenceNumber = referenceNumber
     }
 }

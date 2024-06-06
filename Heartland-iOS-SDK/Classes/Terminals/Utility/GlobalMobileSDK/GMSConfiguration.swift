@@ -4,13 +4,14 @@ import GlobalMobileSDK
 @objcMembers
 public class GMSConfiguration: NSObject {
     private var config: HpsConnectionConfig?
-
-    override public init() {}
-
+    
+    public override init() {
+    }
+    
     public init(config: HpsConnectionConfig) {
         self.config = config
     }
-
+    
     public func asPorticoConfig(terminalType: TerminalType) -> PorticoConfig {
         var config = PorticoConfig()
         if let c = self.config {
@@ -26,7 +27,7 @@ public class GMSConfiguration: NSObject {
             if c.timeout > 0 {
                 config.timeout = Int32(c.timeout)
             }
-
+            
             if c.terminalOnlineProcessTimeout > 0 {
                 config.terminalOnlineProcessTimeout = UInt(c.terminalOnlineProcessTimeout)
             }
@@ -39,11 +40,11 @@ public class GMSConfiguration: NSObject {
         config.terminalType = terminalType
         return config
     }
-
+    
     public static func fromHpsConnectionConfig(_ config: HpsConnectionConfig) -> GMSConfiguration {
         return GMSConfiguration(config: config)
     }
-
+    
     public static func getSKDNameVersion() -> String {
         if let bundle = Bundle(identifier: GMSConfiguration.hearlandIdentifierProjectName) {
             guard let appName = bundle.infoDictionary?[kCFBundleNameKey as String] as? String else { return String.heartlandProjectName }

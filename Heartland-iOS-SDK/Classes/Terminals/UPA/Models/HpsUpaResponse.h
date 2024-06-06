@@ -7,7 +7,6 @@
 #import "HpsTerminalResponse.h"
 #import "HpsDeviceProtocols.h"
 #import "JsonDoc.h"
-#import "HpsTransactionDuplicate.h"
 
 @interface HpsUpaResponse : HpsTerminalResponse<IHPSDeviceResponse>
 
@@ -47,8 +46,8 @@
 @property (nonatomic,strong) NSString *response;
 @property (nonatomic,strong) NSString *multipleMessage;
 @property (nonatomic,strong) NSString *resultText;
+@property (nonatomic,strong) NSString *responseCode;
 @property (nonatomic,strong) NSString *cardAcquisition;
-@property (nonatomic,strong) NSString *cardGroup;
 @property (nonatomic,strong) NSString *signatureLine;
 @property (nonatomic,strong) NSString *pinVerified;
 @property (nonatomic,strong) NSString *result;
@@ -56,6 +55,7 @@
 @property (nonatomic,strong) NSString *requestId;
 
 @property (nonatomic,strong) NSString *cvvResultText;
+@property (nonatomic,strong) NSString *cardBrandTransactionId;
 
     //Batch
 @property (nonatomic,strong) NSString *deviceId;
@@ -73,9 +73,6 @@
 @property (nonatomic,strong) TransactionSummaryRecord *transactionSummaryRecord;
 @property (nonatomic,strong) HpsLastResponse *lastResponse;
 
-// New Duplicate object
-@property (nonatomic, strong) HpsTransactionDuplicate *duplicate;
-
     //EOD
 @property (nonatomic,strong) NSString *reversal;
 @property (nonatomic,strong) NSString *emvOfflineDecline;
@@ -85,7 +82,6 @@
 @property (nonatomic,strong) NSString *batchClose;
 @property (nonatomic,strong) NSString *heartBeat;
 @property (nonatomic,strong) NSString *emvPDL;
-
 -(id)initWithJSONDoc:(JsonDoc*)data;
 
 

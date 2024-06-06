@@ -7,7 +7,6 @@
     if (self != nil)
     {
         device = paxDevice;
-        _ecrTransId = [HpsPaxCreditAuthBuilder newECRTransactionId];
     }
     return self;
 }
@@ -44,7 +43,6 @@
     
     HpsPaxTraceRequest *traceRequest = [[HpsPaxTraceRequest alloc] init];
     traceRequest.referenceNumber = [NSString stringWithFormat:@"%d", self.referenceNumber];
-    traceRequest.ecrTransId = _ecrTransId;
     if (self.clientTransactionId != nil)
         traceRequest.clientTransactionId = self.clientTransactionId;
     if (self.details != nil) {
@@ -110,19 +108,6 @@
     }
 
 	[self.address isZipcodeValid];
-}
-
-+ (NSString *)newECRTransactionId {
-    NSNumberFormatter *formatter = NSNumberFormatter.new;
-    formatter.usesSignificantDigits = YES;
-    formatter.minimumSignificantDigits = 16;
-    formatter.maximumSignificantDigits = 16;
-    
-    NSTimeInterval now = [NSDate.new timeIntervalSince1970];
-    NSString *nowNumString = [formatter stringFromNumber:@(now)];
-    NSString *result = [nowNumString stringByReplacingOccurrencesOfString:formatter.decimalSeparator withString:@""];
-    
-    return result;
 }
 
 @end

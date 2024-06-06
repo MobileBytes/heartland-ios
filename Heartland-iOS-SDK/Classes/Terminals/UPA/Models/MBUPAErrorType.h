@@ -12,6 +12,5 @@ typedef NS_ENUM(NSUInteger, MBUPAErrorType) {
     MBUPAErrorTypeConnectionForceClose,
     MBUPAErrorTypeConnectionUnexpectedClose,
     MBUPAErrorTypeCommunicationInvalidMessage,
-    MBUPAErrorTypeConcurrentMessages,
     MBUPAErrorTypeUnknown,
 };
