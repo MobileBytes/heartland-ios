@@ -5,26 +5,36 @@
 
 import Foundation
 
-public struct HpsUpaStartCardConstants {
-    public static let command = "StartCardTransaction"
-}
-
 public struct HpsUpaStartCard: Codable {
     public var message: String
-    public let data: HpsUpaCommandPayload<HpsUpaStartCardDataDetails>
-
-    public init(message: String = "MSG", data: HpsUpaCommandPayload<HpsUpaStartCardDataDetails>) {
+    public let data: HpsUpaStartCardData
+    
+    public init(message: String = "MSG", data: HpsUpaStartCardData) {
         self.message = message
+        self.data = data
+    }
+}
+
+public struct HpsUpaStartCardData: Codable {
+    public var command: String
+    public let EcrId: String
+    public let requestId: String
+    public let data: HpsUpaStartCardDataDetails
+    
+    public init(command: String = "StartCardTransaction", EcrId: String, requestId: String, data: HpsUpaStartCardDataDetails) {
+        self.command = command
+        self.EcrId = EcrId
+        self.requestId = requestId
         self.data = data
     }
 }
 
 public struct HpsUpaStartCardDataDetails: Codable {
     public let params: HpsUpaStartCardParams
-    public let processingIndicators: HpsUpaStartCardProcessingIndicators?
+    public let processingIndicators: HpsUpaStartCardProcessingIndicators
     public let transaction: HpsUpaStartCardTransaction
-
-    public init(params: HpsUpaStartCardParams, processingIndicators: HpsUpaStartCardProcessingIndicators?, transaction: HpsUpaStartCardTransaction) {
+    
+    public init(params: HpsUpaStartCardParams, processingIndicators: HpsUpaStartCardProcessingIndicators, transaction: HpsUpaStartCardTransaction) {
         self.params = params
         self.processingIndicators = processingIndicators
         self.transaction = transaction
@@ -39,7 +49,7 @@ public struct HpsUpaStartCardParams: Codable {
     public let promptForManualEntryPassword: String?
     public let brandIcon1: Int?
     public let brandIcon2: Int?
-
+    
     public init(acquisitionTypes: String, timeout: Int?, header: String?, displayTotalAmount: String?, promptForManualEntryPassword: String?, brandIcon1: Int?, brandIcon2: Int?) {
         self.acquisitionTypes = acquisitionTypes
         self.timeout = timeout
@@ -59,13 +69,13 @@ public struct HpsUpaStartCardProcessingIndicators: Codable {
     public let quickChip: String
     public let checkLuhn: String?
     public let securityCode: String?
-    public let cardTypeFilter: String?
-
-    public init(quickChip: String, checkLuhn: String?, securityCode: String?, cardTypeFilter: String?) {
+    public let cardFilterType: String?
+    
+    public init(quickChip: String, checkLuhn: String?, securityCode: String?, cardFilterType: String?) {
         self.quickChip = quickChip
         self.checkLuhn = checkLuhn
         self.securityCode = securityCode
-        self.cardTypeFilter = cardTypeFilter
+        self.cardFilterType = cardFilterType
     }
 }
 
@@ -75,7 +85,7 @@ public struct HpsUpaStartCardTransaction: Codable {
     public let tranDate: String?
     public let tranTime: String?
     public let transactionType: String
-
+    
     public init(totalAmount: String, cashBackAmount: String?, tranDate: String?, tranTime: String?, transactionType: String) {
         self.totalAmount = totalAmount
         self.cashBackAmount = cashBackAmount

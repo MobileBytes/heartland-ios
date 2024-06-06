@@ -35,4 +35,5 @@ typedef void (^SendReponseBlock)(NSData*, NSError*);
 - (void)disconnect;
 -(void) send:(id<IHPSDeviceMessage>)message andResponseBlock:(void(^)(NSData*, NSError*))responseBlock;
 - (instancetype) initWithConfig:(HpsConnectionConfig*)config;
+
 @end

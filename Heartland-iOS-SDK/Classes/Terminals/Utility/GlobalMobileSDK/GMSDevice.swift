@@ -2,7 +2,6 @@ import Foundation
 
 @objcMembers
 public class GMSDevice: NSObject, GMSClientAppDelegate, GMSDeviceInterface {
-    
     public var gmsWrapper: GMSWrapper?
     public var deviceDelegate: GMSDeviceDelegate?
     public weak var deviceScanObserver: GMSDeviceScanObserver?
@@ -10,7 +9,7 @@ public class GMSDevice: NSObject, GMSClientAppDelegate, GMSDeviceInterface {
     public var targetTerminalId: UUID?
     public private(set) var terminalsById = [UUID: HpsTerminalInfo]()
     public var otaFirmwareUpdateDelegate: GMSDeviceFirmwareUpdateDelegate?
-
+    
     public private(set) var isScanning = false {
         didSet {
             if oldValue != isScanning {
@@ -18,201 +17,172 @@ public class GMSDevice: NSObject, GMSClientAppDelegate, GMSDeviceInterface {
             }
         }
     }
-
+    
     internal init(config: HpsConnectionConfig, entryModes: [EntryMode], terminalType: TerminalType) {
         super.init()
-        gmsWrapper = .init(
+        self.gmsWrapper = .init(
             .fromHpsConnectionConfig(config),
             delegate: self,
             entryModes: entryModes,
             terminalType: terminalType
         )
     }
-
+    
     public var peripherals: NSMutableArray {
         NSMutableArray(array: Array(terminalsById.values))
     }
-
+    
     public var terminals: [HpsTerminalInfo] {
         peripherals as? [HpsTerminalInfo] ?? []
     }
-
+    
     public func scan() {
-        if let wrapper = gmsWrapper {
+        if let wrapper = self.gmsWrapper {
             isScanning = true
             wrapper.searchDevices()
         }
     }
-
+    
     public func stopScan() {
-        if let wrapper = gmsWrapper {
+        if let wrapper = self.gmsWrapper {
             wrapper.cancelSearch()
         }
     }
-
     public func getDeviceInfo() {}
     public func connectDevice(_ device: HpsTerminalInfo) {
-        if let wrapper = gmsWrapper {
+        if let wrapper = self.gmsWrapper {
             wrapper.connectDevice(device)
         }
     }
-
     public func processTransactionWithRequest(_ builder: GMSBaseBuilder, withTransactionType transactionType: HpsTransactionType) {
-        if let wrapper = gmsWrapper {
-            
+        if let wrapper = self.gmsWrapper {
             wrapper.startTransaction(builder, withTransactionType: transactionType)
         }
     }
-
     public func confirmAmount(_ amount: Decimal) {
-        if let wrapper = gmsWrapper {
+        if let wrapper = self.gmsWrapper {
             wrapper.confirmAmount(amount: amount)
         }
     }
-    
-    public func confirmSurcharge(_ builder: GMSBaseBuilder) {
-        if let wrapper = gmsWrapper {
-            wrapper.confirmSurcharge(builder, withTransactionType: builder.transactionType)
-        }
-    }
-
     public func confirmApplication(_ application: AID) {
-        if let wrapper = gmsWrapper {
+        if let wrapper = self.gmsWrapper {
             wrapper.selectAID(aid: application)
         }
     }
-
     public func cancelTransaction() {
-        if let wrapper = gmsWrapper {
+        if let wrapper = self.gmsWrapper {
             wrapper.cancelTransaction()
         }
     }
 
-    // MARK: GMSClientAppDelegate
+    // mark: GMSClientAppDelegate
 
     public func deviceConnected() {
-        deviceDelegate?.onConnected() //: (HpsTerminalInfo *)terminalInfo];
+        self.deviceDelegate?.onConnected() //:(HpsTerminalInfo *)terminalInfo];
     }
 
     public func deviceDisconnected() {
-        deviceDelegate?.onDisconnected()
+        self.deviceDelegate?.onDisconnected()
     }
 
     public func searchComplete() {
         targetTerminalId = nil
         isScanning = false
-        deviceDelegate?.onBluetoothDeviceList(peripherals)
+        self.deviceDelegate?.onBluetoothDeviceList(self.peripherals)
     }
 
     public func deviceFound(_ device: NSObject) {
         guard let terminal = device as? HpsTerminalInfo else {
             return
         }
-
+        
         terminalsById[terminal.identifier] = terminal
-
+        
         if targetTerminalId == terminal.identifier {
             stopScan()
         }
     }
 
     public func onStatus(_ status: HpsTransactionStatus) {
-        transactionDelegate?.onStatusUpdate(status)
+        self.transactionDelegate?.onStatusUpdate(status)
     }
+
 
     public func onTransactionCancelled() {
-        transactionDelegate?.onTransactionCancelled()
+        self.transactionDelegate?.onTransactionCancelled()
     }
 
-    public func onTransactionComplete(_: String, response: HpsTerminalResponse) {
-        transactionDelegate?.onTransactionComplete(response)
+
+    public func onTransactionComplete(_ result: String, response: HpsTerminalResponse) {
+        self.transactionDelegate?.onTransactionComplete(response)
     }
 
-    public func requestAIDSelection(_ applications: [AID]) {
-        transactionDelegate?.onConfirmApplication(applications)
+
+    public func requestAIDSelection(_ applications: Array<AID>) {
+        self.transactionDelegate?.onConfirmApplication(applications)
     }
+
 
     public func requestAmountConfirmation(_ amount: Decimal) {
-        transactionDelegate?.onConfirmAmount(amount)
+        self.transactionDelegate?.onConfirmAmount(amount)
     }
-    
-    public func onTransactionWaitingForSurchargeConfirmation(result: HpsTransactionStatus, response: HpsTerminalResponse) {
-        transactionDelegate?.onTransactionWaitingForSurchargeConfirmation(result: result, response: response)
+
+
+    public func requestPostalCode(_ maskedPan: String, expiryDate: String, cardholderName: String) {
     }
-    
 
-    public func requestPostalCode(_: String, expiryDate _: String, cardholderName _: String) {}
 
-    public func requestSaFApproval() {}
+    public func requestSaFApproval() {
+    }
 
     public func onError(_ error: NSError) {
-        transactionDelegate?.onTransactionError(error)
-    }
-    
-    public func isConnected() -> Bool {
-        if let gmsWrapper = gmsWrapper {
-            return gmsWrapper.isDeviceConnected()
-        }
-        return false
+        self.transactionDelegate?.onTransactionError(error)
     }
 }
 
 // MARK: Firmware Update
-
-public extension GMSDevice {
-    func getAllVersionsForC2X() {
+extension GMSDevice {
+    public func getAllVersionsForC2X() {
         gmsWrapper?.terminalOTADelegate = self
         gmsWrapper?.requestAvailableOTAVersionsListFor(type: .firmware)
     }
-
-    func requestUpdateVersionForC2X() {
+    
+    public func requestUpdateVersionForC2X() {
         gmsWrapper?.terminalOTADelegate = self
         gmsWrapper?.requestToStartUpdateFor(type: .firmware)
     }
     
-    func requestUpdateConfigForDevice() {
-        gmsWrapper?.terminalOTADelegate = self
-        gmsWrapper?.requestToStartUpdateFor(type: .config)
-    }
-
-    func requestTerminalVersionData() {
+    public func requestTerminalVersionData() {
         gmsWrapper?.terminalOTADelegate = self
         gmsWrapper?.requestTerminalVersionData()
     }
-
-    func setVersionDataFor(versionString: String) {
+    
+    public func setVersionDataFor(versionString: String) {
         gmsWrapper?.terminalOTADelegate = self
         gmsWrapper?.setVersionDataFor(versionString: versionString)
-    }
-    
-    func setRemoteKeyInjection() {
-        gmsWrapper?.terminalOTADelegate = self
-        gmsWrapper?.requestToStartUpdateFor(type: .keyInjection)
     }
 }
 
 extension GMSDevice: GMSClientTerminalOTAManagerDelegate {
-    public func terminalVersionDetails(info: [AnyHashable: Any]?) {
+    public func terminalVersionDetails(info: [AnyHashable : Any]?) {
         otaFirmwareUpdateDelegate?.onTerminalVersionDetails(info: info)
     }
-
+    
     public func terminalOTAResult(resultType: GlobalMobileSDK.TerminalOTAResult,
-                                  info: [String: AnyObject]?, error: Error?)
-    {
+                                  info: [String : AnyObject]?, error: Error?) {
         otaFirmwareUpdateDelegate?.terminalOTAResult(resultType: resultType, info: info, error: error)
     }
-
-    public func listOfVersionsFor(type _: GlobalMobileSDK.TerminalOTAUpdateType, results: [Any]?) {
+    
+    public func listOfVersionsFor(type: GlobalMobileSDK.TerminalOTAUpdateType, results: [Any]?) {
         otaFirmwareUpdateDelegate?.listOfVersionsFor(results: results)
     }
-
+    
     public func otaUpdateProgress(percentage: Float) {
         otaFirmwareUpdateDelegate?.otaUpdateProgress(percentage: percentage)
     }
-
-    public func onReturnSetTargetVersion(resultType _: GlobalMobileSDK.TerminalOTAResult,
-                                         type _: GlobalMobileSDK.TerminalOTAUpdateType, message: String)
-    {
+    
+    public func onReturnSetTargetVersion(resultType: GlobalMobileSDK.TerminalOTAResult,
+                                         type: GlobalMobileSDK.TerminalOTAUpdateType, message: String) {
         otaFirmwareUpdateDelegate?.onReturnSetTargetVersion(message: message)
     }
 }

@@ -93,11 +93,6 @@
 @property (readonly,retain) NSString *HeartBeat;
 @property (readonly,retain) NSString *EMVPDL;
 
-// Surcharge
-@property (readonly,retain) NSString *SurchargeFee;
-@property (readonly,retain) NSString *SurchargeAmount;
-
-
 @end
 
 @interface HpsHpaResponse : NSObject<HpaResposeInterface>
@@ -188,9 +183,5 @@
 @property (readonly,retain) NSString *HeartBeat;
 @property (readonly,retain) NSString *EMVPDL;
 -(id)initWithXMLData:(NSData *)data withSetRecord:(BOOL)value;
-
-// Surcharge
-@property (readonly,retain) NSString *SurchargeFee;
-@property (readonly,retain) NSString *SurchargeAmount;
 
 @end

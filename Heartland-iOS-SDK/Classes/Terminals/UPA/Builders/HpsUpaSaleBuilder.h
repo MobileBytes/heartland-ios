@@ -22,15 +22,8 @@
 @property (nonatomic, strong) NSDecimalNumber *taxAmount;
 @property (nonatomic, readwrite) HpsStoredCardInitiator storedCardInitiator;
 @property (nonatomic, strong) NSString *cardBrandTransactionId;
-@property (nonatomic, strong) NSNumber *allowDuplicate;
-
-// HSA/FSA Values
-@property (nonatomic, strong) NSDecimalNumber *prescriptionAmount;
-@property (nonatomic, strong) NSDecimalNumber *clinicAmount;
-@property (nonatomic, strong) NSDecimalNumber *dentalAmount;
-@property (nonatomic, strong) NSDecimalNumber *visionOpticalAmount;
 
 - (void) execute:(void(^)(HpsUpaResponse*, NSError*))responseBlock;
 - (id)initWithDevice: (HpsUpaDevice*)upaDevice;
-- (void) executeUPAUSA:(void(^)(HpsUpaResponse*, NSError*))responseBlock;
+
 @end

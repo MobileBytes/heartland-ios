@@ -2,7 +2,7 @@
 
 @implementation HpsTerminalEnums
 
-NSString *const PAX_DEVICE_VERSION = @"1.54";
+NSString *const PAX_DEVICE_VERSION = @"1.35";
 
 + (BOOL) isControlCode:(Byte)code{
     BOOL isControlCode = NO;
