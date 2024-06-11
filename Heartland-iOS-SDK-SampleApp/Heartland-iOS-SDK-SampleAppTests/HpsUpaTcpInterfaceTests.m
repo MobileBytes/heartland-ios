@@ -55,6 +55,7 @@
 - (void)test_send_concurrentMessageErrorOnNextSend {
     // given
     HpsConnectionConfig *config = [[HpsConnectionConfig alloc] init];
+    config.port = @"8080";
     config.shouldFailConcurrentMessaging = YES;
     MockHpsTcpInterface *tcp1 = [[MockHpsTcpInterface alloc] init];
     tcp1.config = config;
@@ -117,9 +118,63 @@
     [self waitForExpectations:@[expectation2]];
 }
 
+- (void)test_send_NextSendIfPortDifferent {
+    // given
+    HpsConnectionConfig *config1 = [[HpsConnectionConfig alloc] init];
+    config1.port = @"8080";
+    config1.shouldFailConcurrentMessaging = YES;
+    HpsConnectionConfig *config2 = [[HpsConnectionConfig alloc] init];
+    config2.port = @"8081";
+    config2.shouldFailConcurrentMessaging = YES;
+    MockHpsTcpInterface *tcp1 = [[MockHpsTcpInterface alloc] init];
+    tcp1.config = config1;
+    MockHpsTcpInterface *tcp2 = [[MockHpsTcpInterface alloc] init];
+    tcp2.config = config2;
+    HpsUpaTcpInterface *upaTcp1 = [[HpsUpaTcpInterface alloc] initWithInterface:tcp1];
+    HpsUpaTcpInterface *upaTcp2 = [[HpsUpaTcpInterface alloc] initWithInterface:tcp2];
+    HpsUpaRequest *request = [[HpsUpaRequest alloc] init];
+    request.message = @"MSG";
+    id<IHPSDeviceMessage> message = [HpsTerminalUtilities BuildRequest:request.JSONString
+                                                            withFormat:UPA];
+
+    // when
+    XCTestExpectation *expectation1 = [self expectationWithDescription:@"send 1"];
+    expectation1.expectedFulfillmentCount = 2;
+    [tcp1 setSendDataOnOpenBlock:^(NSData *data, BOOL onOpen) {
+        // then
+        XCTAssertNotNil(data);
+        XCTAssertTrue(onOpen);
+        [expectation1 fulfill];
+    }];
+    [upaTcp1 send:message andUPAResponseBlock:^(JsonDoc *json, NSError *error) {
+        // then
+        XCTAssertEqual(error.code, MBUPAErrorTypeConnectionForceClose);
+        [expectation1 fulfill];
+    }];
+    XCTestExpectation *expectation2 = [self expectationWithDescription:@"send 2"];
+    expectation2.expectedFulfillmentCount = 2;
+    [tcp2 setSendDataOnOpenBlock:^(NSData *data, BOOL onOpen) {
+        // then
+        XCTAssertNotNil(data);
+        XCTAssertTrue(onOpen);
+        [expectation2 fulfill];
+    }];
+    [upaTcp2 send:message andUPAResponseBlock:^(JsonDoc *json, NSError *error) {
+        // then
+        XCTAssertEqual(error.code, MBUPAErrorTypeConnectionForceClose);
+        [expectation2 fulfill];
+    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [upaTcp1 disconnect];
+        [upaTcp2 disconnect];
+    });
+    [self waitForExpectations:@[expectation1, expectation2]];
+}
+
 - (void)test_send_NextSendIfConcurrentMessagesAllowed {
     // given
     HpsConnectionConfig *config = [[HpsConnectionConfig alloc] init];
+    config.port = @"8080";
     config.shouldFailConcurrentMessaging = NO;
     MockHpsTcpInterface *tcp1 = [[MockHpsTcpInterface alloc] init];
     tcp1.config = config;
