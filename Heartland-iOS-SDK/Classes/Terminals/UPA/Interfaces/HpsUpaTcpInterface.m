@@ -25,7 +25,10 @@
 
 @implementation HpsUpaTcpInterface
 
-static BOOL _isMessaging;
+/// used to block concurrent messages to UPA devices on the same port
+/// is `-1` by default (value indicating no messaging is happening)
+/// only blocks concurrent messages to 1 port at a time
+static int _messagingPort = -1;
 
 - (instancetype)initWithConfig:(HpsConnectionConfig *)config {
     HpsTcpInterface *interface = [[HpsTcpInterface alloc] init];
@@ -64,11 +67,12 @@ static BOOL _isMessaging;
 }
 
 - (void)send:(id<IHPSDeviceMessage>)message andUPAResponseBlock:(HpsUPAHandler)responseBlock {
-    if (_isMessaging && _interface.config.shouldFailConcurrentMessaging) {
+    if (_messagingPort == _interface.config.port.intValue
+        && _interface.config.shouldFailConcurrentMessaging) {
         responseBlock(nil, [self errorFromType:MBUPAErrorTypeConcurrentMessages]);
         return;
     }
-    _isMessaging = YES;
+    _messagingPort = _interface.config.port.intValue;
     [self addEventsWithMessage:message];
     [self setHandler:responseBlock];
     NSData *data = [message getSendBuffer];
@@ -78,7 +82,7 @@ static BOOL _isMessaging;
 // MARK: - HpsTcpInterfaceDelegate
 
 - (void)tcpInterfaceDidCloseStreams {
-    _isMessaging = NO;
+    _messagingPort = -1;
     [_events removeAllObjects];
     BOOL closedEarly = _handlerJSONString == nil && _handlerError == nil;
     if (closedEarly) [self errorOccurred:MBUPAErrorTypeConnectionUnexpectedClose];
