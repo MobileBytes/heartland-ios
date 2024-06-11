@@ -111,4 +111,7 @@ final class HpsC2XDeviceTests: XCTestCase, HpsC2xDeviceDelegate, HpsC2xTransacti
         print("onTransactionError \(error)")
     }
     
+    func onTransactionWaitingForSurchargeConfirmation(result: HpsTransactionStatus, response: HpsTerminalResponse) {
+        print("onTransactionWaitingForSurchargeConfirmation")
+    }
 }

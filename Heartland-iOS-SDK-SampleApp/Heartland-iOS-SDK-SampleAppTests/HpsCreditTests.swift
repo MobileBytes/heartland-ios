@@ -151,4 +151,7 @@ extension HpsCreditTests: GMSTransactionDelegate {
     func onTransactionCancelled() {}
 
     func onTransactionError(_: NSError) {}
+    
+    func onTransactionWaitingForSurchargeConfirmation(result: HpsTransactionStatus, response: HpsTerminalResponse) {
+    }
 }
