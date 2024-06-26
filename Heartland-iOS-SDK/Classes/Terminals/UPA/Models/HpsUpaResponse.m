@@ -63,7 +63,8 @@ static int IsFieldEnable;
     self.upaOsVersion = [data getValueAsString:@"OsVersion"];
     self.upaEmvSdkVersion = [data getValueAsString:@"EmvSdkVersion"];
     self.upaContactlessSdkVersion = [data getValueAsString:@"CTLSSdkVersion"];
-
+    self.merchantId = [data getValueAsString:@"merchantId"];
+    
     if ([data has:@"host"]) {
         JsonDoc* host = [data get:@"host"];
 
@@ -137,6 +138,19 @@ static int IsFieldEnable;
         self.invoiceNbr = [payment getValueAsString:@"invoiceNbr"];
         self.cardholderName = [payment getValueAsString:@"cardHolderName"];
         self.signatureData = [payment getValueAsString:@"signatureData"];
+        
+        if ([payment has:@"AccountType"]) {
+            self.accountType = [payment getValueAsString:@"AccountType"];
+        }
+        if ([payment has:@"PosSequenceNbr"]) {
+            self.posSequenceNo = [payment getValueAsString:@"PosSequenceNbr"];
+        }
+        if ([payment has:@"PinVerified"]) {
+            NSString *pinVerified = [payment getValueAsString:@"PinVerified"];
+            if ([pinVerified isEqual: @"1"]) {
+                self.pinVerified = pinVerified;
+            }
+        }
     }
 
     if ([data has:@"emv"]) {
@@ -163,6 +177,24 @@ static int IsFieldEnable;
         
         NSString *emvTVR = [emv getValueAsString:@"95"];
         self.emvTVR = emvTVR;
+        //Get the currency code if exist and assign the currency as string value
+        NSString *currency = [emv getValueAsString:@"5F2A"];
+        if ([currency  isEqual: @"0124"]) {
+            self.currencyCode = @"CAD";
+        } else if ([currency isEqual: @"0840"]) {
+            self.currencyCode = @"USD";
+        }
+
+        //Language preference - Possible Values:
+        //        ● 656E = English
+        //        ● 6672 = French
+        //        ● 6573 = Spanish
+        NSString *languagePreference = [emv getValueAsString:@"5F2D"];
+        if ([languagePreference isEqual: @"6672"]) {
+            self.languagePreference = @"fr-CA";
+        } else {
+            self.languagePreference = @"en-US";
+        }
     }
     
     if ([data has:@"duplicate"]) {
