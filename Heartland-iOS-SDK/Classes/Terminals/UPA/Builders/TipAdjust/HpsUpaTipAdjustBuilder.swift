@@ -27,7 +27,6 @@ public class HpsUpaTipAdjustBuilder {
         if let requestData = try? JSONEncoder().encode(request),
            let requestString = String(data: requestData, encoding: .utf8) {
             upaDevice.processTransaction(withJSONString: requestString) { response, str, error in
-                #warning("TODO: tip and total amounts not mapping in HpsUpaResponse...")
                 completion(response as? HpsUpaResponse, error)
             }
         } else {
