@@ -208,6 +208,20 @@ static int IsFieldEnable;
         self.duplicate.duplicatePanLast4 = [duplicate getValueAsString:@"panLast4"];
     }
 
+    // last-ditch effort to parse amounts from `transaction` packet (in tip-adjust, etc)
+    JsonDoc *transactionPacket = [data get:@"transaction"];
+    if (transactionPacket) {
+        if (!self.transactionAmount) {
+            [self setTransactionAmount:[transactionPacket amountForKey:@"totalAmount"]];
+        }
+        if (!self.tipAmount) {
+            [self setTipAmount:[transactionPacket amountForKey:@"tipAmount"]];
+        }
+        if (!self.merchantFee) {
+            [self setMerchantFee:[transactionPacket amountForKey:@"surcharge"]];
+        }
+    }
+
     return self;
 }
 
