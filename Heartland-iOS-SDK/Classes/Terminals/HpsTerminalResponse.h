@@ -60,6 +60,7 @@
 @property (nonatomic,strong) NSString *taxExeptId;
 @property (nonatomic,strong) NSString *paymentType; //ticket number missing
 @property (nonatomic,strong) NSDecimalNumber *merchantFee;
+@property (nonatomic,strong) NSString *IsoRespCode;
 
 @property (nonatomic,strong) NSDecimalNumber *approvedAmount;
 @property (nonatomic,strong) HpsPaxHostResponse *hostResponse;

@@ -123,6 +123,9 @@ static int IsFieldEnable;
             self.tokenData.tokenValue = [host getValueAsString:@"tokenValue"];
         }
 
+        if ([host has:@"IsoRespCode"]) {
+            self.IsoRespCode= [host getValueAsString:@"IsoRespCode"];
+        }
     }
 
     if ([data has:@"payment"]) {
