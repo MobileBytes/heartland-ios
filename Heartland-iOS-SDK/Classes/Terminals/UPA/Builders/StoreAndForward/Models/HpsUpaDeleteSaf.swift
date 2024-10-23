@@ -30,10 +30,10 @@ public struct HpsUpaDeleteSafData: Codable {
 }
 
 public struct HpsUpaDeleteSafTransaction: Codable {
-    public let tranNo: String
-    public let referenceNumber: String
+    public let tranNo: String?
+    public let referenceNumber: String?
     
-    public init(tranNo: String, safReferenceNumber: String) {
+    public init(tranNo: String?, safReferenceNumber: String?) {
         self.tranNo = tranNo
         self.referenceNumber = safReferenceNumber
     }
