@@ -87,10 +87,10 @@
             //done
             NSString *dataview = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
             NSLog(@"data returned: %@", dataview);
-            HpsPaxInitializeResponse *response;
+            HpsPaxDeviceResponse *response;
             @try {
                 //parse data
-                response = [[HpsPaxInitializeResponse alloc] initWithBuffer:data];
+                response = [[HpsPaxDeviceResponse alloc] initWithMessageID:A15_RSP_CANCEL andBuffer:data];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     responseBlock(nil);
                 });

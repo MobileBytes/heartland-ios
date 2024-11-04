@@ -101,7 +101,6 @@ class HpsUPAStartCardTests: XCTestCase {
             command: HpsUpaStartCardConstants.command,
             ecrId: "123",
             requestId: "1234",
-            ecrId: "123", requestId: "1234",
             data: HpsUpaStartCardDataDetails(
                 params: params,
                 processingIndicators: pi,

@@ -60,6 +60,7 @@
 @property (nonatomic,strong) NSString *taxExeptId;
 @property (nonatomic,strong) NSString *paymentType; //ticket number missing
 @property (nonatomic,strong) NSDecimalNumber *merchantFee;
+@property (nonatomic,strong) NSString *IsoRespCode;
 
 @property (nonatomic,strong) NSDecimalNumber *approvedAmount;
 @property (nonatomic,strong) HpsPaxHostResponse *hostResponse;
@@ -84,6 +85,11 @@
 @property (nonatomic,strong) NSString *signatureData;
 @property (nonatomic,strong) NSString *surchargeFee;
 @property (nonatomic,strong) NSString *surchargeAmount;
+@property (nonatomic,strong) NSString *merchantId;
+@property (nonatomic,strong) NSString *accountType;
+@property (nonatomic,strong) NSString *posSequenceNo;
+@property (nonatomic,strong) NSString *currencyCode;
+@property (nonatomic,strong) NSString *languagePreference;
 - (void) mapResponse:(id <HpaResposeInterface>) response;
 // @todo
 //+(HpsTerminalResponse*)terminalResponseFromVitalSDK:(TransactionResponse*)transactionResponse;
