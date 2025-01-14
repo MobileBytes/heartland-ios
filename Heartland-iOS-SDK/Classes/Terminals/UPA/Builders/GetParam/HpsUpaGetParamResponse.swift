@@ -9,12 +9,12 @@ import Foundation
 
 public struct HpsUpaGetParamResponse: Codable {
     public let message: String
-    public let data: HpsUpaResponsePayload<HpsUpaGetParamResponseData>
+    public let data: HpsUpaGetParamResponseData
 
-    public init(message: String, data: HpsUpaResponsePayload<HpsUpaGetParamResponseData>) {
+    public init(message: String, data: HpsUpaGetParamResponseData) {
         self.message = message
         self.data = data
     }
 }
 
-public typealias HpsUpaGetParamResponseData = [HpsUpaGetParamRequestParam: String]
+public typealias HpsUpaGetParamResponseData = HpsUpaResponsePayload<[HpsUpaGetParamRequestParam: String]>
