@@ -76,9 +76,19 @@ public class HpsUpaGetParamBuilder: HpsUpaGetParamBuilderProtocol {
         guard let device = device else {
             return nil
         }
-        let body = HpsUpaGetParamRequestDataData(password: password, params: .init(configuration: params))
-        let data = HpsUpaGetParamRequestData(command: "GetParam", ecrId: ecrId, requestId: requestId, data: body)
-        let request = HpsUpaGetParamRequest(data: data)
+        let request = HpsUpaGetParamRequest(
+            data: .init(
+                command: "GetParam",
+                ecrId: ecrId,
+                requestId: requestId,
+                data: .init(
+                    password: password,
+                    params: .init(
+                        configuration: params
+                    )
+                )
+            )
+        )
         reset()
         return (device, request)
     }

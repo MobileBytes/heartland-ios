@@ -9,43 +9,18 @@ import Foundation
 
 public struct HpsUpaGetParamRequest: Codable {
     public let message: String
-    public let data: HpsUpaGetParamRequestData
+    public let data: HpsUpaCommandPayload<HpsUpaGetParamRequestBody>
 
     public init(
         message: String = "MSG",
-        data: HpsUpaGetParamRequestData
+        data: HpsUpaCommandPayload<HpsUpaGetParamRequestBody>
     ) {
         self.message = message
         self.data = data
     }
 }
 
-public struct HpsUpaGetParamRequestData: Codable {
-    public let command: String
-    public let ecrId: String
-    public let requestId: String
-    public let data: HpsUpaGetParamRequestDataData
-
-    public enum CodingKeys: String, CodingKey {
-        case command
-        case ecrId = "EcrId"
-        case requestId, data
-    }
-
-    public init(
-        command: String,
-        ecrId: String,
-        requestId: String,
-        data: HpsUpaGetParamRequestDataData = .init()
-    ) {
-        self.command = command
-        self.ecrId = ecrId
-        self.requestId = requestId
-        self.data = data
-    }
-}
-
-public struct HpsUpaGetParamRequestDataData: Codable {
+public struct HpsUpaGetParamRequestBody: Codable {
     public let password: String?
     public let params: HpsUpaGetParamRequestParams
 
