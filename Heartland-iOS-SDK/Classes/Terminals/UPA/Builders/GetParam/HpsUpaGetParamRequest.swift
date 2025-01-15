@@ -66,6 +66,13 @@ public struct HpsUpaGetParamRequestParams: Codable {
     }
 }
 
-public enum HpsUpaGetParamRequestParam: String, Codable {
+public enum HpsUpaGetParamRequestParam: String, RawRepresentable, Codable {
+    case automaticEODProcessingSupported = "AutomaticEODProcessingSupported"
+    case automaticEODProcessingTime = "AutomaticEODProcessingTime"
+    case automaticEODWindow = "AutomaticEODWindow"
     case managerPassword = "ManagerPassword"
+    case safAmountMax = "SAFAmountMAX"
+    case safEndOfDay = "SAFEndOfDay"
+    case safIntervalTimer = "SAFIntervalTimer"
+    case safMode = "SAFMode"
 }

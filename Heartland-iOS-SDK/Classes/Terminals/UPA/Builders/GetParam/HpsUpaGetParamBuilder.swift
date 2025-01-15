@@ -15,7 +15,7 @@ public protocol HpsUpaGetParamBuilderProtocol {
     func configure(requestId: String)
     func configure(params: [HpsUpaGetParamRequestParam])
     func configure(password: String?)
-    func sendGetParam(completion: @escaping Handler)
+    func execute(completion: @escaping Handler)
 }
 
 public enum HpsUpaGetParamBuilderError: Error {
@@ -53,7 +53,7 @@ public class HpsUpaGetParamBuilder: HpsUpaGetParamBuilderProtocol {
         self.password = password
     }
 
-    public func sendGetParam(completion: @escaping Handler) {
+    public func execute(completion: @escaping Handler) {
         guard let (device, request) = buildRequest(),
               let data = try? JSONEncoder().encode(request),
               let packet = String(data: data, encoding: .utf8) else {
@@ -61,9 +61,6 @@ public class HpsUpaGetParamBuilder: HpsUpaGetParamBuilderProtocol {
             return
         }
         device.processTransaction(withJSONString: packet) { response, responseJSON, error in
-            #warning("TODO: double check underlying handler...")
-            /// `processTransaction` returns an error if the response packet can't be converted to a HpsUpaResponse object
-            /// think this should be fine since the init used to create the response only checks for values and doesn't add what's not found
             if let error = error {
                 completion(.failure(error))
             } else if let data = responseJSON?.data(using: .utf8),
