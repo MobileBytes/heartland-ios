@@ -51,6 +51,8 @@
             return @"UPA device is busy.";
         case MBUPAErrorTypeDeviceTimeout:
             return @"UPA device timed out.";
+        case MBUPAErrorTypeConnectionTimeout:
+            return @"UPA device connection took too long to establish and was cancelled.";
         case MBUPAErrorTypeConnectionForceClose:
             return @"UPA device connection was forced closed";
         case MBUPAErrorTypeConnectionUnexpectedClose:
