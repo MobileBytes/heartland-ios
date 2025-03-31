@@ -23,6 +23,8 @@
 }
 @property (nonatomic, strong) HpsConnectionConfig *config;
 @property (nonatomic, strong) id<IHPSDeviceCommInterface> interface;
+@property (nonatomic, copy) void(^requestCallback) (NSString *);
+@property (nonatomic, copy) void(^responseCallback) (NSString *);
 
 - (id) initWithConfig:(HpsConnectionConfig*)config;
 

@@ -491,6 +491,11 @@ withResponseBlock:(void(^)(HpsPaxLocalDetailResponse*, NSError*))responseBlock
     
     //Run on device
     id<IHPSDeviceMessage> request = [HpsTerminalUtilities buildRequest:messageId withElements:commands];
+    
+    if (self.requestCallback) {
+        self.requestCallback([request toString]);
+    }
+    
     [self.interface send:request andResponseBlock:^(NSData *data, NSError *error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -500,6 +505,11 @@ withResponseBlock:(void(^)(HpsPaxLocalDetailResponse*, NSError*))responseBlock
             //done
             //NSString *dataview = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
             // NSLog(@"data returned device: %@", dataview);
+            if (self.responseCallback) {
+                NSString *dataview = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+                self.responseCallback(dataview);
+            }
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 responseBlock(data, nil);
             });
