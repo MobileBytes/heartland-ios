@@ -121,7 +121,7 @@
     if (len > 0) {
         [_inputBuffer appendBytes:(const void *)buf length:len];
         _readByteIndex += len;
-        [_config.logger hpsInterfaceDidReceiveData:[NSData dataWithBytes:buf length:len]];
+        [_config.logger hpsInterfaceDidReceiveData:[_inputBuffer copy]];
         [_delegate tcpInterfaceDidReadData:_inputBuffer];
     } else {
         [self readErrorOfStream:stream];

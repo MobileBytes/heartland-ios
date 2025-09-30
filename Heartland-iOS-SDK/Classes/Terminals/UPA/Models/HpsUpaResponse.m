@@ -126,9 +126,6 @@ static int IsFieldEnable;
         if ([host has:@"IsoRespCode"]) {
             self.IsoRespCode= [host getValueAsString:@"IsoRespCode"];
         }
-        if ([host has:@"BankRespCode"]) {
-            self.BankRespCode= [host getValueAsString:@"BankRespCode"];
-        }
     }
 
     if ([data has:@"payment"]) {

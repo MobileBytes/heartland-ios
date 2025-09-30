@@ -16,7 +16,6 @@
 @interface HpsUpaTcpInterface () <HpsTcpInterfaceDelegate>
 
 @property (strong, nonatomic) HpsTcpInterface *interface;
-@property (strong, nonatomic) NSTimer *timeoutTimer;
 @property (strong, nonatomic) NSMutableArray<HpsUpaEvent *> *events;
 @property (nonatomic) HpsUPAHandler handler;
 @property (strong, nonatomic) NSError *handlerError;
@@ -53,7 +52,6 @@ static int _messagingPort = -1;
 }
 
 - (void)disconnect {
-    [self cancelTimeout];
     if (_handler == nil) return;
     [self errorOccurred:MBUPAErrorTypeConnectionForceClose];
     [_interface closeConnection];
@@ -77,34 +75,13 @@ static int _messagingPort = -1;
     _messagingPort = _interface.config.port.intValue;
     [self addEventsWithMessage:message];
     [self setHandler:responseBlock];
-    if (_interface.config.timeout) {
-        [self queueTimeoutWithDelay:_interface.config.timeout];
-    }
     NSData *data = [message getSendBuffer];
     [_interface sendData:data onOpen:YES];
-}
-
-- (void)queueTimeoutWithDelay:(NSTimeInterval)delay {
-    [self cancelTimeout];
-    _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:self
-                                                   selector:@selector(performTimeout)
-                                                   userInfo:nil repeats:NO];
-}
-
-- (void)performTimeout {
-    [self errorOccurred:MBUPAErrorTypeConnectionTimeout];
-    [_interface closeConnection];
-}
-
-- (void)cancelTimeout {
-    [_timeoutTimer invalidate];
-    _timeoutTimer = nil;
 }
 
 // MARK: - HpsTcpInterfaceDelegate
 
 - (void)tcpInterfaceDidCloseStreams {
-    [self cancelTimeout];
     _messagingPort = -1;
     [_events removeAllObjects];
     BOOL closedEarly = _handlerJSONString == nil && _handlerError == nil;
@@ -119,7 +96,6 @@ static int _messagingPort = -1;
 }
 
 - (void)tcpInterfaceDidOpenStream {
-    [self cancelTimeout];
 }
 
 - (void)tcpInterfaceDidReadData:(NSData *)data {
@@ -221,9 +197,4 @@ static int _messagingPort = -1;
     NSString *jsonString = [HpsUpaParser jsonStringFromUPARaw:data];
     [self setHandlerJSONString:jsonString];
 }
-
-- (void)dealloc {
-    [self cancelTimeout];
-}
-
 @end
