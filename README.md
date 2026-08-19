@@ -1,4 +1,4 @@
-<a href="http://developer.heartlandpaymentsystems.com/SecureSubmit" target="_blank">
+ <a href="http://developer.heartlandpaymentsystems.com/SecureSubmit" target="_blank">
 	<img src="http://developer.heartlandpaymentsystems.com/Resource/Download/sdk-readme-heartland-logo" alt="Heartland logo" title="Heartland" align="right" />
 </a>
 
