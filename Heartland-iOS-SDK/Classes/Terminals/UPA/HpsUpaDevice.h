@@ -36,7 +36,7 @@
 - (void)processTransactionWithJSONString:(NSString*)HpsUpaRequestString withResponseBlock:(void(^)(id <IHPSDeviceResponse>, NSString*, NSError*))responseBlock;
 - (void) getDiagnosticReport:(void(^)(HpsUpaResponse*, NSError*))responseBlock;
 - (void)processEndOfDayWithEcrId:(NSString*)ecrId requestId:(NSString*)requestId response:(void(^)(HpsUpaResponse*, NSError*))responseBlock;
-- (int)generateNumber;
+- (uint64_t)generateNumber;
 - (void) lineItem:(NSString*)leftText withResponseBlock:(void(^)(id <IHPSDeviceResponse>, NSError*))responseBlock;
 - (void) lineItem:(NSString*)leftText withRightText:(NSString*)rightText withResponseBlock:(void(^)(id <IHPSDeviceResponse>, NSError*))responseBlock;
 

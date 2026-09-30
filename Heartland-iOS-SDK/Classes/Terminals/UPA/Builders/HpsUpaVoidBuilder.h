@@ -7,7 +7,7 @@
     HpsUpaDevice *device;
 }
 
-@property (nonatomic, readwrite) int referenceNumber;
+@property (nonatomic, readwrite) uint64_t referenceNumber;
 @property (nonatomic, strong) NSString *ecrId;
 @property (nonatomic, strong) NSString *clerkId;
 @property (nonatomic, strong) NSString *terminalRefNumber;

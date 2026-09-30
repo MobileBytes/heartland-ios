@@ -447,9 +447,15 @@
 
 #pragma mark -
 #pragma mark Random Number Generator
--(int)generateNumber {
-
-    return arc4random_uniform(999999999);
+- (uint64_t)generateNumber {
+    const uint64_t max = 999999999999ULL;
+    uint64_t value;
+    do {
+        uint64_t high = (uint64_t)arc4random_uniform(1000000);
+        uint64_t low = (uint64_t)arc4random_uniform(1000000);
+        value = (high * 1000000ULL) + low;
+    } while (value == 0 || value > max);
+    return value;
 }
 
 #pragma mark -

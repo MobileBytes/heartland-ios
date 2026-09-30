@@ -20,9 +20,9 @@
     request.data.command = UPA_MSG_ID_toString[ UPA_MSG_ID_CARD_VERIFY ];
     request.data.EcrId = self.ecrId;
     if (self.referenceNumber > 0) {
-        request.data.requestId = [NSString stringWithFormat:@"%d", self.referenceNumber];
+        request.data.requestId = [NSString stringWithFormat:@"%llu", self.referenceNumber];
     } else {
-        request.data.requestId = [NSString stringWithFormat:@"%d", [device generateNumber]];
+        request.data.requestId = [NSString stringWithFormat:@"%llu", [device generateNumber]];
     }
     request.data.data = [[HpsUpaData alloc] init];
     
