@@ -14,10 +14,10 @@
 
 - (HpsBinaryDataScanner*) parseResponse{
     HpsBinaryDataScanner *reader = [super parseResponse];
-    //must parse responses for duplicate error codes (100011 - Local Duplicate, 103000 Host Duplicate)
-    //and new  partial approval code (000002)
-    if ([self.deviceResponseCode isEqualToString:@"000000"] || [self.deviceResponseCode isEqualToString:@"000002"] || [self.deviceResponseCode isEqualToString:@"100011"]  || [self.deviceResponseCode isEqualToString:@"103000"]) {
-        
+    //must parse responses for duplicate error codes (100011 - Local Duplicate, 103000 Host Duplicate),
+    //declines (000100) so EMV/metadata tags in ExtData are available for compliant receipts,
+    //and offline (SAF) approvals (000001) returned by newer PAX firmware
+      if ([self.deviceResponseCode isEqualToString:@"000000"] || [self.deviceResponseCode isEqualToString:@"100011"]  || [self.deviceResponseCode isEqualToString:@"103000"] || [self.deviceResponseCode isEqualToString:@"000002"] || [self.deviceResponseCode isEqualToString:@"000001"] || [self.deviceResponseCode isEqualToString:@"000100"]) {
         self.hostResponse = [[HpsPaxHostResponse alloc] initWithBinaryReader:reader];
         self.transactionType = [reader readStringUntilDelimiter:HpsControlCodes_FS];
         self.amountResponse = [[HpsPaxAmountResponse alloc] initWithBinaryReader:reader];

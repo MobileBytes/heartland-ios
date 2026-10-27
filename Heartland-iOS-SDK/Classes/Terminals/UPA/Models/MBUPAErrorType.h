@@ -9,8 +9,10 @@ typedef NS_ENUM(NSUInteger, MBUPAErrorType) {
     MBUPAErrorTypeNone = 0,
     MBUPAErrorTypeDeviceBusy,
     MBUPAErrorTypeDeviceTimeout,
+    MBUPAErrorTypeConnectionTimeout,
     MBUPAErrorTypeConnectionForceClose,
     MBUPAErrorTypeConnectionUnexpectedClose,
     MBUPAErrorTypeCommunicationInvalidMessage,
+    MBUPAErrorTypeConcurrentMessages,
     MBUPAErrorTypeUnknown,
 };

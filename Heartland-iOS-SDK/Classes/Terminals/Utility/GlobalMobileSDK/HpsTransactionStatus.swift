@@ -4,59 +4,60 @@ import GlobalMobileSDK
 @objc
 public enum HpsTransactionStatus: UInt {
     case waitingForConfiguration,
-        configuringTerminal,
-        configurationFailedTryAgain,
-        ready,
-        started,
-        waitingForCard,
-        insertCard,
-        removeCard,
-        cardRemoved,
-        pleaseWait,
-        pleaseSeePhone,
-        useMagstripe,
-        tryAgain,
-        swipeErrorReSwipe,
-        noEmvApps,
-        applicationExpired,
-        cardReadError,
-        processing,
-        processingDoNotRemoveCard,
-        presentCard,
-        presentCardAgain,
-        insertSwipeOrTryAnotherCard,
-        insertOrSwipeCard,
-        multipleCardDetected,
-        contactlessCardStillInField,
-        transactionTerminated,
-        waitingForTerminal,
-        cardDetected,
-        cardBlocked,
-        notAuthorized,
-        notAcceptedRemoveCard,
-        fallbackToMSR,
-        fallbackToChip,
-        waitingForAmountConfirmation,
-        waitingForAidSelection,
-        waitingForPostalCode,
-        waitingForSafApproval,
-        cardHolderBypassedPIN,
-        processingSaf,
-        requestingOnlineProcessing,
-        reversal,
-        reversalInProgress,
-        complete,
-        cancel,
-        cancelling,
-        cancelled,
-        error,
-        unknown,
-        terminalDeclined
+         configuringTerminal,
+         configurationFailedTryAgain,
+         ready,
+         started,
+         waitingForCard,
+         insertCard,
+         removeCard,
+         cardRemoved,
+         pleaseWait,
+         pleaseSeePhone,
+         useMagstripe,
+         tryAgain,
+         swipeErrorReSwipe,
+         noEmvApps,
+         applicationExpired,
+         cardReadError,
+         processing,
+         processingDoNotRemoveCard,
+         presentCard,
+         presentCardAgain,
+         insertSwipeOrTryAnotherCard,
+         insertOrSwipeCard,
+         multipleCardDetected,
+         contactlessCardStillInField,
+         transactionTerminated,
+         waitingForTerminal,
+         cardDetected,
+         cardBlocked,
+         notAuthorized,
+         notAcceptedRemoveCard,
+         fallbackToMSR,
+         fallbackToChip,
+         waitingForAmountConfirmation,
+         waitingForAidSelection,
+         waitingForPostalCode,
+         waitingForSafApproval,
+         cardHolderBypassedPIN,
+         processingSaf,
+         requestingOnlineProcessing,
+         reversal,
+         reversalInProgress,
+         complete,
+         cancel,
+         cancelling,
+         cancelled,
+         error,
+         unknown,
+         terminalDeclined,
+         surchargeRequested
 }
 
-extension HpsTransactionStatus {
-    public static func fromTransactionState(_ state: TransactionState) -> HpsTransactionStatus {
-        switch (state) {
+public extension HpsTransactionStatus {
+    static func fromTransactionState(_ state: TransactionState) -> HpsTransactionStatus {
+        switch state {
         case .waitingForConfiguration: return .waitingForConfiguration
         case .configuringTerminal: return .configuringTerminal
         case .configurationFailedTryAgain: return .configurationFailedTryAgain
@@ -106,6 +107,7 @@ extension HpsTransactionStatus {
         case .error: return .error
         case .unknown: return .unknown
         case .terminalDeclined: return .terminalDeclined
+        case .waitingForSurchargeAcceptance: return .surchargeRequested
         @unknown default: return .unknown
         }
     }

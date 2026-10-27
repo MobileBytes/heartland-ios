@@ -90,6 +90,12 @@
     return [NSString stringWithFormat:@"%@", value];
 }
 
+- (NSDecimalNumber *)amountForKey:(NSString *)key {
+    NSString *str = [self getValueAsString:key];
+    if (!str) { return nil; }
+    return [NSDecimalNumber decimalNumberWithString:str];
+}
+
 + (instancetype) parse:(NSString*)json
 {
     NSData* data = [json dataUsingEncoding:NSUTF8StringEncoding];

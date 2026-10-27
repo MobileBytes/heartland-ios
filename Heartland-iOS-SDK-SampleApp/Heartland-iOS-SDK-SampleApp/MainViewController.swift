@@ -2,20 +2,20 @@
 //  MainViewController.swift
 //
 
-import UIKit
 import Heartland_iOS_SDK
+import UIKit
 
 class MainViewController: UITableViewController {
-    
     // MARK: Device
+    
     private var device: HpsC2xDevice?
     
     // MARK: NotificationCenter
-    let notificationCenter: NotificationCenter = NotificationCenter.default
+    
+    let notificationCenter: NotificationCenter = .default
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         addObserver()
     }
@@ -27,23 +27,32 @@ class MainViewController: UITableViewController {
                                        name: notificationName,
                                        object: nil)
     }
+    
+    
 }
 
 // MARK: Segue
 
 extension MainViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+    override func prepare(for segue: UIStoryboardSegue, sender _: Any?) {
         if let transactionDestination = segue.destination as? ConnectC2XViewController {
             transactionDestination.device = nil
         }
         
         if let transactionDestination = segue.destination as? C2XTransactionsViewController {
-            transactionDestination.device = self.device
+            transactionDestination.device = device
         }
         
         if let transactionDestination = segue.destination as? C2XFirmwareUpdateViewController {
-            transactionDestination.device = self.device
+            transactionDestination.device = device
+        }
+        
+        if let transactionDestination = segue.destination as? UpaTransactionsViewController,
+           let selectedRowIndexPath = self.tableView.indexPathForSelectedRow,
+           let selectedCell = self.tableView.cellForRow(at: selectedRowIndexPath) {
+            
+            transactionDestination.upaTransaction = (selectedCell.tag == 1010) ? UpaUSATransaction() : PayAppCanadaTransaction()
+            transactionDestination.title = (selectedCell.tag == 1010) ? "UPA USA Transactions" : "PayApp Canada Transactions"
         }
     }
 }

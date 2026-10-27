@@ -121,7 +121,7 @@
     if (len > 0) {
         [_inputBuffer appendBytes:(const void *)buf length:len];
         _readByteIndex += len;
-        [_config.logger hpsInterfaceDidReceiveData:[_inputBuffer copy]];
+        [_config.logger hpsInterfaceDidReceiveData:[NSData dataWithBytes:buf length:len]];
         [_delegate tcpInterfaceDidReadData:_inputBuffer];
     } else {
         [self readErrorOfStream:stream];
@@ -137,6 +137,10 @@
 
 - (void)writeBytesToStream:(NSOutputStream *)stream {
     if (_outputBuffer == nil) return;
+    if (_config.shouldLogSends) {
+        [_config.logger willSendDataToHpsInterface:[_outputBuffer copy]
+                                    writeByteIndex:_writeByteIndex];
+    }
     uint8_t *bytes = (uint8_t *)[_outputBuffer mutableBytes];
     bytes += _writeByteIndex;
     NSUInteger dataLen = [_outputBuffer length];

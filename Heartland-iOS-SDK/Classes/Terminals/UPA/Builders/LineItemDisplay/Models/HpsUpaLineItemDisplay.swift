@@ -8,7 +8,7 @@ import Foundation
 public struct HpsUpaLineItemDisplay: Codable {
     public var message: String
     public let data: HpsUpaLineItemDisplayData?
-    
+
     public init(message: String = "MSG", data: HpsUpaLineItemDisplayData?) {
         self.message = message
         self.data = data

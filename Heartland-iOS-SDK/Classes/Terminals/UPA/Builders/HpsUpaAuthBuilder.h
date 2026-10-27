@@ -17,6 +17,12 @@
 @property (nonatomic, strong) NSString *issuerRefNumber;
 @property (nonatomic, strong) NSString *transactionId;
 
+// HSA/FSA Values
+@property (nonatomic, strong) NSDecimalNumber *prescriptionAmount;
+@property (nonatomic, strong) NSDecimalNumber *clinicAmount;
+@property (nonatomic, strong) NSDecimalNumber *dentalAmount;
+@property (nonatomic, strong) NSDecimalNumber *visionOpticalAmount;
+
 - (void) execute:(void(^)(HpsUpaResponse*, NSError*))responseBlock;
 - (id)initWithDevice: (HpsUpaDevice*)upaDevice;
 

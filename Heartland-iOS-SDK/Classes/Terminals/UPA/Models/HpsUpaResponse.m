@@ -63,14 +63,15 @@ static int IsFieldEnable;
     self.upaOsVersion = [data getValueAsString:@"OsVersion"];
     self.upaEmvSdkVersion = [data getValueAsString:@"EmvSdkVersion"];
     self.upaContactlessSdkVersion = [data getValueAsString:@"CTLSSdkVersion"];
-
+    self.merchantId = [data getValueAsString:@"merchantId"];
+    
     if ([data has:@"host"]) {
         JsonDoc* host = [data get:@"host"];
 
         self.transactionId = [host getValueAsString:@"responseId"];
         self.transactionTime = [host getValueAsString:@"respDateTime"];
         self.gatewayRspMsg = [host getValueAsString:@"gatewayResponseMessage"];
-        self.gatewayRspCode = [host getValueAsString:@"gatewayRespCode"];
+        self.gatewayRspCode = [host getValueAsString:@"gatewayResponseCode"];
         self.responseCode = [host getValueAsString:@"responseCode"];
         self.responseText = [host getValueAsString:@"responseText"];
         self.terminalRefNumber = [host getValueAsString:@"tranNo"];
@@ -122,10 +123,17 @@ static int IsFieldEnable;
             self.tokenData.tokenValue = [host getValueAsString:@"tokenValue"];
         }
 
+        if ([host has:@"IsoRespCode"]) {
+            self.IsoRespCode= [host getValueAsString:@"IsoRespCode"];
+        }
+        if ([host has:@"BankRespCode"]) {
+            self.BankRespCode= [host getValueAsString:@"BankRespCode"];
+        }
     }
 
     if ([data has:@"payment"]) {
         JsonDoc* payment = [data get:@"payment"];
+        self.cardGroup = [payment getValueAsString:@"cardGroup"];
         self.cardType = [payment getValueAsString:@"cardType"];
         self.paymentType = [payment getValueAsString:@"paymentType"];
         self.entryMethod = [payment getValueAsString:@"cardAcquisition"];
@@ -135,6 +143,20 @@ static int IsFieldEnable;
         self.storeAndForward = [payment getValueAsString:@"storeAndForward"];
         self.invoiceNbr = [payment getValueAsString:@"invoiceNbr"];
         self.cardholderName = [payment getValueAsString:@"cardHolderName"];
+        self.signatureData = [payment getValueAsString:@"signatureData"];
+        
+        if ([payment has:@"AccountType"]) {
+            self.accountType = [payment getValueAsString:@"AccountType"];
+        }
+        if ([payment has:@"PosSequenceNbr"]) {
+            self.posSequenceNo = [payment getValueAsString:@"PosSequenceNbr"];
+        }
+        if ([payment has:@"PinVerified"]) {
+            NSString *pinVerified = [payment getValueAsString:@"PinVerified"];
+            if ([pinVerified isEqual: @"1"]) {
+                self.pinVerified = pinVerified;
+            }
+        }
     }
 
     if ([data has:@"emv"]) {
@@ -154,6 +176,55 @@ static int IsFieldEnable;
         } else if ([cryptotype isEqualToString:@"80"]) {
             self.applicationCryptogramType = ARQC;
             self.applicationCryptogramTypeS = [HpsTerminalEnums applicationCryptogramTypeToString:self.applicationCryptogramType];
+        }
+        
+        NSString *emvTSI = [emv getValueAsString:@"9B"];
+        self.emvTSI = emvTSI;
+        
+        NSString *emvTVR = [emv getValueAsString:@"95"];
+        self.emvTVR = emvTVR;
+        //Get the currency code if exist and assign the currency as string value
+        NSString *currency = [emv getValueAsString:@"5F2A"];
+        if ([currency  isEqual: @"0124"]) {
+            self.currencyCode = @"CAD";
+        } else if ([currency isEqual: @"0840"]) {
+            self.currencyCode = @"USD";
+        }
+
+        //Language preference - Possible Values:
+        //        ● 656E = English
+        //        ● 6672 = French
+        //        ● 6573 = Spanish
+        NSString *languagePreference = [emv getValueAsString:@"5F2D"];
+        if ([languagePreference isEqual: @"6672"]) {
+            self.languagePreference = @"fr-CA";
+        } else {
+            self.languagePreference = @"en-US";
+        }
+    }
+    
+    if ([data has:@"duplicate"]) {
+        JsonDoc* duplicate = [data get:@"duplicate"];
+        self.duplicate = [[HpsTransactionDuplicate alloc] init];
+        self.duplicate.duplicateCardType = [duplicate getValueAsString:@"cardType"];
+        self.duplicate.duplicateTotalAmount = [duplicate getValueAsString:@"totalAmount"];
+        self.duplicate.duplicateApprovalCode = [duplicate getValueAsString:@"approvalCode"];
+        self.duplicate.duplicateReferenceNumber = [duplicate getValueAsString:@"referenceNumber"];
+        self.duplicate.duplicateTranDate = [duplicate getValueAsString:@"tranDate"];
+        self.duplicate.duplicatePanLast4 = [duplicate getValueAsString:@"panLast4"];
+    }
+
+    // last-ditch effort to parse amounts from `transaction` packet (in tip-adjust, etc)
+    JsonDoc *transactionPacket = [data get:@"transaction"];
+    if (transactionPacket) {
+        if (!self.transactionAmount) {
+            [self setTransactionAmount:[transactionPacket amountForKey:@"totalAmount"]];
+        }
+        if (!self.tipAmount) {
+            [self setTipAmount:[transactionPacket amountForKey:@"tipAmount"]];
+        }
+        if (!self.merchantFee) {
+            [self setMerchantFee:[transactionPacket amountForKey:@"surcharge"]];
         }
     }
 

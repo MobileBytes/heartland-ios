@@ -3,6 +3,8 @@
 #import "HpsTerminalEnums.h"
 #import "HpsUpaTcpInterface.h"
 #import "NSObject+ObjectMap.h"
+#import "HpsUpaDeviceSignatureResponse.h"
+#import "UpaEnums.h"
 
 @implementation HpsUpaDevice
 
@@ -10,6 +12,7 @@
 {
     if ((self = [super init])) {
         self.config = config;
+        
         errorDomain = [HpsCommon sharedInstance].hpsErrorDomain;
         switch ((int)self.config.connectionMode) {
             case HpsConnectionModes_TCP_IP: {
@@ -272,7 +275,7 @@
 -(void)processTransactionWithJSONString:(NSString*)HpsUpaRequestString withResponseBlock:(void(^)(id <IHPSDeviceResponse>, NSString*, NSError*))responseBlock
 {
     id<IHPSDeviceMessage> request = [HpsTerminalUtilities BuildRequest:HpsUpaRequestString withFormat:format];
-
+    NSLog(@"request json = \n  : %@", HpsUpaRequestString);
     [self.interface send:request andUPAResponseBlock:^(JsonDoc *data, NSError *error) {
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -308,14 +311,14 @@
 }
 #pragma mark -
 #pragma mark EOD
--(void)processEndOfDay:(void(^)(HpsUpaResponse*, NSError*))responseBlock
+-(void)processEndOfDayWithEcrId:(NSString*)ecrId requestId:(NSString*)requestId response:(void(^)(HpsUpaResponse*, NSError*))responseBlock
 {
     HpsUpaRequest* request = [[HpsUpaRequest alloc] init];
     request.message = @"MSG";
     request.data = [[HpsUpaCommandData alloc] init];
     request.data.command = UPA_MSG_ID_toString[ UPA_MSG_ID_EXECUTE_EOD ];
-    request.data.EcrId = @"13";
-    request.data.requestId = @"123";
+    request.data.EcrId = ecrId;
+    request.data.requestId = requestId;
 
     id<IHPSDeviceMessage> data = [HpsTerminalUtilities BuildRequest:request.JSONString withFormat:format];
 
@@ -491,6 +494,29 @@
     [recipt appendString:[NSString stringWithFormat:@"&x_response_text=%@",[self getValueOfObject:response.responseText]]];
     
     NSLog(@"Recipt = %@", recipt);
+}
+
+- (void) getSignatureData:(NSString*)ecrId andRequestId:(NSString*)requestId response:(void(^)(HpsUpaDeviceSignatureResponse*, NSError*))responseBlock {
+    HpsUpaRequest* request = [[HpsUpaRequest alloc] init];
+    request.message = @"MSG";
+    request.data = [[HpsUpaCommandData alloc] init];
+    request.data.command = UPA_MSG_ID_toString[ UPA_MSG_ID_GET_SIGNATURE ];
+    request.data.EcrId = ecrId;
+    request.data.requestId = requestId;
+    request.data.data = [[HpsUpaData alloc] init];
+
+    request.data.data.params = [[HpsUpaParams alloc] init];
+    request.data.data.params.displayOption = @"1";
+    request.data.data.params.prompt1 = UPA_MSG_PROMPT_toString[ UPA_MSG_TYPE_PROMPT1 ];
+
+    [self processTransactionWithRequest:request withResponseBlock:^(id<IHPSDeviceResponse> response, NSString *json, NSError * error) {
+        if (error != nil) {
+            responseBlock(nil, error);
+            return;
+        }
+
+        responseBlock((HpsUpaDeviceSignatureResponse*)response, nil);
+    }];
 }
 
 

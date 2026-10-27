@@ -16,6 +16,7 @@
 @interface HpsUpaTcpInterface () <HpsTcpInterfaceDelegate>
 
 @property (strong, nonatomic) HpsTcpInterface *interface;
+@property (strong, nonatomic) NSTimer *timeoutTimer;
 @property (strong, nonatomic) NSMutableArray<HpsUpaEvent *> *events;
 @property (nonatomic) HpsUPAHandler handler;
 @property (strong, nonatomic) NSError *handlerError;
@@ -25,12 +26,22 @@
 
 @implementation HpsUpaTcpInterface
 
+/// used to block concurrent messages to UPA devices on the same port
+/// is `-1` by default (value indicating no messaging is happening)
+/// only blocks concurrent messages to 1 port at a time
+static int _messagingPort = -1;
+
 - (instancetype)initWithConfig:(HpsConnectionConfig *)config {
+    HpsTcpInterface *interface = [[HpsTcpInterface alloc] init];
+    interface.config = config;
+    return [self initWithInterface:interface];
+}
+
+- (instancetype)initWithInterface:(HpsTcpInterface *)interface {
     self = [super init];
     if (self) {
         _events = [NSMutableArray array];
-        _interface = [[HpsTcpInterface alloc] init];
-        _interface.config = config;
+        _interface = interface;
         _interface.delegate = self;
     }
     return self;
@@ -42,6 +53,7 @@
 }
 
 - (void)disconnect {
+    [self cancelTimeout];
     if (_handler == nil) return;
     [self errorOccurred:MBUPAErrorTypeConnectionForceClose];
     [_interface closeConnection];
@@ -57,15 +69,43 @@
 }
 
 - (void)send:(id<IHPSDeviceMessage>)message andUPAResponseBlock:(HpsUPAHandler)responseBlock {
+    if (_messagingPort == _interface.config.port.intValue
+        && _interface.config.shouldFailConcurrentMessaging) {
+        responseBlock(nil, [self errorFromType:MBUPAErrorTypeConcurrentMessages]);
+        return;
+    }
+    _messagingPort = _interface.config.port.intValue;
     [self addEventsWithMessage:message];
     [self setHandler:responseBlock];
+    if (_interface.config.timeout) {
+        [self queueTimeoutWithDelay:_interface.config.timeout];
+    }
     NSData *data = [message getSendBuffer];
     [_interface sendData:data onOpen:YES];
+}
+
+- (void)queueTimeoutWithDelay:(NSTimeInterval)delay {
+    [self cancelTimeout];
+    _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:self
+                                                   selector:@selector(performTimeout)
+                                                   userInfo:nil repeats:NO];
+}
+
+- (void)performTimeout {
+    [self errorOccurred:MBUPAErrorTypeConnectionTimeout];
+    [_interface closeConnection];
+}
+
+- (void)cancelTimeout {
+    [_timeoutTimer invalidate];
+    _timeoutTimer = nil;
 }
 
 // MARK: - HpsTcpInterfaceDelegate
 
 - (void)tcpInterfaceDidCloseStreams {
+    [self cancelTimeout];
+    _messagingPort = -1;
     [_events removeAllObjects];
     BOOL closedEarly = _handlerJSONString == nil && _handlerError == nil;
     if (closedEarly) [self errorOccurred:MBUPAErrorTypeConnectionUnexpectedClose];
@@ -79,6 +119,7 @@
 }
 
 - (void)tcpInterfaceDidOpenStream {
+    [self cancelTimeout];
 }
 
 - (void)tcpInterfaceDidReadData:(NSData *)data {
@@ -130,12 +171,15 @@
 }
 
 - (void)errorOccurred:(MBUPAErrorType)errorType {
+    [self setHandlerError:[self errorFromType:errorType]];
+}
+
+- (NSError *)errorFromType:(MBUPAErrorType)errorType {
     NSString *domain = HpsCommon.sharedInstance.hpsErrorDomain;
     NSString *description = [HpsUpaParser descriptionOfMBUPAErrorType:errorType];
     description = [NSString stringWithFormat:@"UPA response error - %@", description];
     NSDictionary *userInfo = @{NSLocalizedDescriptionKey: description};
-    NSError *error = [NSError errorWithDomain:domain code:errorType userInfo:userInfo];
-    [self setHandlerError:error];
+    return [NSError errorWithDomain:domain code:errorType userInfo:userInfo];
 }
 
 - (void)executeNextMessage {
@@ -176,6 +220,10 @@
     if (![self isExpectingFinalMessage]) return;
     NSString *jsonString = [HpsUpaParser jsonStringFromUPARaw:data];
     [self setHandlerJSONString:jsonString];
+}
+
+- (void)dealloc {
+    [self cancelTimeout];
 }
 
 @end
